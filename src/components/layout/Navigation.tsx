@@ -1,0 +1,35 @@
+import { Link } from "react-router"
+import { LuLayoutDashboard } from "react-icons/lu";
+import { CiLogout } from "react-icons/ci";
+import { FaRegHeart } from "react-icons/fa";
+import { useLocation } from "react-router";
+
+const Navigation = () => {
+  const location = useLocation()
+
+  console.log(location)
+
+
+
+  return (
+    <div className=" border-r-2 h-screen border-gray-300 bg-primary text-white flex flex-col justify-between py-6">
+      <div> 
+        <div className="flex items-center px-8" >
+          <img src="https://placehold.co/40" alt="" />
+          <h1 className="font-bold ml-2">Weather app</h1>
+        </div>
+
+        <nav className=" space-y-2 font-semibold pl-8 mt-24">
+          <Link className={`flex gap-2 items-center py-2 border-secondary ${(location.pathname === '/')?"border-r-2" :null }`} to={'/'}><LuLayoutDashboard/> Dashboard</Link>
+          <Link className={`flex gap-2 items-center py-2 border-secondary ${(location.pathname === '/pins')?"border-r-2" :null }`} to={'/pins'}><FaRegHeart/> Favorites</Link>
+        </nav>
+      </div>
+
+      <div className="pl-8">
+        <Link className="flex gap-2 items-center" to={'/logout'}><CiLogout/> Logout</Link>
+      </div>
+    </div>
+  )
+}
+
+export default Navigation
