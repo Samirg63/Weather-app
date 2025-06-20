@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')!).render(
     <div className='flex'>
 
       <Navigation/>
-      <div className='w-full'>
+      <div className='w-full h-full'>
         <Header/>
         <Container> 
           <Routes>
