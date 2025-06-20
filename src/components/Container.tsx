@@ -1,12 +1,13 @@
 import React from 'react'
 
 type Props = {
-    children:React.ReactNode
+    children:React.ReactNode,
+    customClass?:string
 }
 
-const Container = ({children}: Props) => {
+const Container = ({children, customClass}: Props) => {
   return (
-    <div className='p-4 w-full'>
+    <div className={`w-full h-full ${customClass}`}>
         {children}
     </div>
   )

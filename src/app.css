@@ -4,6 +4,15 @@ body{
   background-color: #f0f0f0;
 }
 
+.MuiChartsAxis-root{display: none;}
+.css-yp0zfy-MuiChartsWrapper-root{
+  pointer-events: none; 
+}
+
+#uv-gauge .css-b9rdri-MuiGauge-referenceArc{
+  fill: url('#Uv-Gradient');
+}
+
 @theme { 
   --color-white:#f0f0f0;
   --color-primary:#142733;

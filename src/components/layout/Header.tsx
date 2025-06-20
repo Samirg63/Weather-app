@@ -1,5 +1,6 @@
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaRegBell } from "react-icons/fa";
+import { CiUser } from "react-icons/ci";
 
 const Header = () => {
   return (
@@ -11,7 +12,9 @@ const Header = () => {
 
       <div className="flex gap-4">
         <button className=" cursor-pointer"><FaRegBell className="text-xl"/></button>
-        <div id="user" className="w-10 h-10 rounded-full bg-primary cursor-pointer"></div>
+        <div id="user" className="cursor-pointer w-10 h-10 rounded-full bg-zinc-200 flex justify-center items-center">
+         <CiUser className="text-xl"/>
+        </div>
       </div>
     </header>
   )
