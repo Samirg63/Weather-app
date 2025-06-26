@@ -13,6 +13,10 @@ import Container from './components/Container'
 //Pages
 import Home from './pages/Home'
 import Pins from './pages/Pins'
+import Auth from './pages/Auth'
+
+
+
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
@@ -25,6 +29,7 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
               <Route index path="/" element={<Home/>}/>
               <Route path="/pins" element={<Pins/>}/>
+              <Route path={'/auth'} element={<Auth />}/>
           </Routes>
         </Container>
       </div>
