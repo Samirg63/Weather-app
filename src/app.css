@@ -4,16 +4,74 @@ body{
   background-color: #f0f0f0;
 }
 
+*{
+  box-sizing: border-box;
+}
+
 .MuiChartsAxis-root{display: none;}
 .css-yp0zfy-MuiChartsWrapper-root{
   pointer-events: none; 
+}
+
+#auth-bg{
+  background: linear-gradient(to bottom, #8cfff4 0%, #f0f0f0  90%);
+}
+
+.auth-boxShadow{
+  filter: drop-shadow(0 0 2px rgba(0,0,0,.3));
+  /* scroll-behavior: smooth; */
 }
 
 #uv-gauge .css-b9rdri-MuiGauge-referenceArc{
   fill: url('#Uv-Gradient');
 }
 
+#arrow,
+#arrow::before {
+  position: absolute !important;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  border-color: inherit;
+  border-width: inherit;
+}
+
+#arrow {
+  visibility: hidden;
+}
+
+#arrow::before {
+  visibility: visible;
+  content: '';
+  transform: rotate(45deg);
+}
+
+#userPopper[data-popper-placement='top'] > #arrow {
+  bottom: -4px !important;
+  border-left-width: 0 !important;
+  border-top-width: 0 !important;
+}
+
+#userPopper[data-popper-placement='bottom'] > #arrow {
+  top: -4px !important;
+  border-right-width: 0 !important;
+  border-bottom-width: 0 !important;
+}
+
+#userPopper[data-popper-placement='left'] > #arrow {
+  right: -4px !important;
+  border-left-width: 0 !important;
+  border-bottom-width: 0 !important;
+}
+
+#userPopper[data-popper-placement='right'] > #arrow {
+  left: -4px !important;
+  border-right-width: 0 !important;
+  border-top-width: 0 !important;
+}
+
 @theme { 
+  --color-trueWhite:rgb(255,255,255);
   --color-white:#f0f0f0;
   --color-primary:#142733;
   --color-secondary:#8CCCF4

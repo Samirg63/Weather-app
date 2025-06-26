@@ -1,7 +1,14 @@
+import Widget from "../components/Widget"
 
 const Pins = () => {
   return (
-    <div>Pins</div>
+    <div className="p-4 flex flex-wrap gap-2">
+
+      <Widget/>
+      <Widget/>
+      <Widget/>
+
+    </div>
   )
 }
 

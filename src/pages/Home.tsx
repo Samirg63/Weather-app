@@ -3,14 +3,24 @@ import NextDaysInfo from '../components/NextDaysInfo'
 
 
 import { LineChart } from '@mui/x-charts/LineChart';
-import { IoLocationSharp,IoWaterOutline } from "react-icons/io5";
+import { IoLocationSharp,IoWaterOutline,IoHeart,IoHeartOutline } from "react-icons/io5";
 import { FaWind } from "react-icons/fa";
 import { LuWindArrowDown } from "react-icons/lu";
 
+
 import { Gauge,GaugeContainer,GaugeValueArc,GaugeReferenceArc, GaugeValueText,useGaugeState } from '@mui/x-charts/Gauge';
+import { useState } from 'react';
 
 const Home = () => {
   
+// Temp Variables
+const [isPinned,setIsPinned] = useState<boolean>(false)
+
+function pinCity(){
+  setIsPinned(!isPinned)
+}
+//End Temp Variables
+
   function GaugePointer(){
     const { valueAngle, outerRadius, cx, cy } = useGaugeState();
 
@@ -40,14 +50,22 @@ const Home = () => {
     <Container customClass="flex ">
       <div className='w-9/12 grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4'>
       
+      {/* Main Display */}
         <div className='rounded-xl relative bg-[url(/assets/Backgrounds/Snow.jpg)] flex justify-between text-zin-900 bg-no-repeat bg-cover row-span-2 col-span-2 p-4'>
                    
             <div className=' w-1/2 pr-4 flex flex-col justify-between'>
             
               <div className='flex justify-between items-center'>
-                <div className='flex gap-2 items-center text-lg'>
+                <div className='flex gap-2 items-center text-lg relative'>
                   <IoLocationSharp/>
                   <h3 className='font-semibold'>Gothan</h3>
+                  <div className=' cursor-pointer' onClick={pinCity}>
+                    <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
+                    <IoHeart 
+                    className={`text-2xl absolute top-1 z-[0] duration-200
+                    ${(isPinned)? "fill-red-400" : "fill-[rgba(240,240,240,.5)]"}
+                      `}/>
+                  </div>
                 </div>
 
                 <span>Today 19:04 PM</span>
@@ -110,6 +128,8 @@ const Home = () => {
             </div>
           
         </div>
+
+      {/*Wind Display  */}
         <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between relative'>
           <div className='flex flex-col justify-between h-full'>
             <h3 className='font-semibold text-xl'>Wind</h3>
@@ -118,6 +138,8 @@ const Home = () => {
           </div>
           <img src="/assets/Compass.png" width={140} height={140} className='absolute right-0 top-0' alt="" />
         </div>
+
+      {/*Rain chance Display  */}
         <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
         <div id='rain-chance' className='flex flex-col justify-between h-full'>
             <h3 className='font-semibold text-xl'>Rain Chance</h3>
@@ -135,6 +157,7 @@ const Home = () => {
           className='font-bold'/>
         </div>
 
+      {/*Pressure Display  */}
         <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
         <div className='flex flex-col justify-between h-full'>
             <h3 className='font-semibold text-xl'>Pressure</h3>
@@ -157,6 +180,7 @@ const Home = () => {
           </GaugeContainer>
         </div>
 
+      {/* UV Display */}
         <div id='uv-gauge' className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
           <div className='flex flex-col justify-between h-full'>
             <h3 className='font-semibold text-xl'>UV Index</h3>
