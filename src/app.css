@@ -8,11 +8,21 @@ body{
   box-sizing: border-box;
 }
 
+/*Mui customs*/
 .MuiChartsAxis-root{display: none;}
 .css-yp0zfy-MuiChartsWrapper-root{
   pointer-events: none; 
 }
 
+.MuiButtonBase-root{
+  background-color: #142733 !important;
+}
+
+.MuiButtonBase-root:hover{
+  background-color: #214155 !important;
+}
+
+/*Auth Customs*/
 #auth-bg{
   background: linear-gradient(to bottom, #8cfff4 0%, #f0f0f0  90%);
 }
@@ -21,6 +31,8 @@ body{
   filter: drop-shadow(0 0 2px rgba(0,0,0,.3));
   /* scroll-behavior: smooth; */
 }
+
+/*Dashboard customs*/
 
 #uv-gauge .css-b9rdri-MuiGauge-referenceArc{
   fill: url('#Uv-Gradient');
