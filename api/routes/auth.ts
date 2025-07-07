@@ -10,6 +10,11 @@ interface registerData{
     confirmPassword?:string | string
     email?:string,
 }
+
+interface loginData{
+    email?:string,
+    password?:string | string
+}
 authRouter.post('/register',async (req,res)=>{
 
     const data:registerData = req.body
@@ -27,6 +32,22 @@ authRouter.post('/register',async (req,res)=>{
         const result = await auth.register(data)
         
         res.status(result.status).send(result) 
+    }
+})
+
+authRouter.post('/login',async (req,res)=>{
+
+    const data:loginData = req.body
+
+    if(!data.password){
+        res.status(403).send('Password is required')
+    }else if(!data.email){
+        res.status(403).send('Email is required')
+    }else{
+         
+        const result = await auth.login(data)
+        
+        res.status(result!.status).send(result) 
     }
 })
 

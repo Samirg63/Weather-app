@@ -1,15 +1,16 @@
 import { userModel } from "../db/schemas/userSchema";
 
+interface userData{
+    username?:string,
+    email?:string,
+    password?:string | number
+} 
+
 export class UserController{
 
-    static async getUserBy(method:string,data:string|number){
-        let requestData = await userModel.findOne({[method]:data})
-        .then((item)=>{
-            return item
-        })
-        .catch((e)=>{
-            console.log(e)
-        })
+    static async getUserBy(method:string,data:string|number):Promise<userData | null>{
+        let requestData:userData | null = await userModel.findOne({[method]:data})
+        
 
         return requestData;
     }
