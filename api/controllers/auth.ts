@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
 
 import { UserController } from './User'
 import { ok, httpError } from '../utils/httpResponse'
@@ -6,14 +8,19 @@ import { ok, httpError } from '../utils/httpResponse'
 interface userData{
     username?:string,
     email?:string,
-    password?:string | number
+    password?:string | number,
+    _doc?:any
 } 
 
 interface dbResponse{
     status:number,
     success:boolean,
-    msg:any
+    msg:any,
+    body?:any,
+    token?:string
 }
+
+dotenv.config()
 
 export class authController{
 
@@ -48,7 +55,13 @@ export class authController{
 
         try {
             if(await bcrypt.compare(String(data.password),String(user.password))){
-                return ok(200,"Correct credentials!")
+                let secret:string|undefined = process.env.SECRET
+                const {password,...rest} = user._doc
+                let token = jwt.sign({...rest},secret!)
+                return {...ok(200,"Correct credentials!"),
+                    body:rest,
+                    token:token
+                }
             }else{
                 return httpError(400,'wrong Credentials')
             }
