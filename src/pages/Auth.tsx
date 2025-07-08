@@ -1,16 +1,26 @@
+//Components
 import FormControl from "@mui/material/FormControl"
 import InputAdornment from "@mui/material/InputAdornment"
 import TextField from "@mui/material/TextField"
-import { useState } from "react"
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 
+//Function
+import { useState, type ChangeEvent } from "react"
+import AuthServices from "../services/Auth";
+
+//Icons
 import { MdOutlineEmail } from "react-icons/md";
 import { TbLockPassword } from "react-icons/tb";
-
 import { FaEye,FaEyeSlash } from "react-icons/fa";
-import Button from "@mui/material/Button";
+
+//Interfaces
+import type { IuserData } from "../utils/interfaces";
 
 const Auth = () => {
   const [authMethod,setAuthMethod] = useState<"login"| "signin">('login')
+  const [formData,setFormData] = useState<IuserData>({})
+  const {authLoading,login,register} = AuthServices()
 
 
   function fadeAuthMessage(to:'login'|'signin'){
@@ -81,13 +91,18 @@ const Auth = () => {
   }
 
   function showPassword(){
-    const passwordInput:NodeListOf<HTMLInputElement> | null = document.querySelectorAll('input#password-input')
+    const passwordInput:NodeListOf<HTMLInputElement> | null = document.querySelectorAll('div.password-input')
     const showIcon:NodeListOf<HTMLInputElement> | null = document.querySelectorAll('.showIcon')
     const dontShowIcon:NodeListOf<HTMLInputElement> | null = document.querySelectorAll('.dontShowIcon')
 
-    if(passwordInput[0].type === 'password'){
-      Object.keys(passwordInput).map((index:any)=>{
-          passwordInput[index].type = 'text'    
+    const onlyInputs:HTMLInputElement[] = [] as HTMLInputElement[]
+    passwordInput.forEach((node)=>{
+      onlyInputs!.push(node.querySelector('input.MuiInputBase-input')!)
+    })
+
+    if(onlyInputs[0].type === 'password'){
+      Object.keys(onlyInputs).map((index:any)=>{
+          onlyInputs[index].type = 'text'    
       })
       Object.keys(showIcon).map((index:any)=>{
           showIcon[index].style.display = 'none'    
@@ -97,8 +112,8 @@ const Auth = () => {
       })
 
     }else{
-      Object.keys(passwordInput).map((index:any)=>{
-        passwordInput[index].type = 'password'    
+      Object.keys(onlyInputs).map((index:any)=>{
+        onlyInputs[index].type = 'password'    
       })
       Object.keys(showIcon).map((index:any)=>{
           showIcon[index].style.display = 'block'    
@@ -108,8 +123,10 @@ const Auth = () => {
       })
     }
   }
+
   function changeAuthMethod(){
-    
+    setFormData({})
+
     if(authMethod === "login"){
         setAuthMethod("signin")
         fadeAuthMessage('signin')
@@ -122,7 +139,20 @@ const Auth = () => {
         
     }
         
+  }
+
+  function handleChange(e:ChangeEvent<HTMLInputElement>){
+    setFormData({...formData,[e.target.name]:e.target.value})
+  }
+
+  function handleSubmit(){
+    console.log(formData)
+    if(authMethod === 'login'){
+      login(formData)
+    }else if(authMethod === 'signin'){
+      return;
     }
+  }
 
   return (
     <div id="auth-bg" className="w-full h-screen flex items-center justify-center">
@@ -130,41 +160,49 @@ const Auth = () => {
         overflow-x-hidden
         `}>
         <div id="content-container" className="h-full flex flex-col justify-center shrink-0 w-1/2 p-4">
-        <FormControl className="w-full gap-4">
-            <h2 className="text-center font-bold text-3xl text-primary">Log in</h2>
-            <TextField variant="outlined"  label="E-mail" required
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MdOutlineEmail />
-                  </InputAdornment>
-                ),
-              },
-            }}  
-           />
 
-            <TextField className="passwordInput" variant="outlined" id="password-input"  label="Password" type="password" required
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <TbLockPassword />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end" className=" cursor-pointer">
-                    <FaEye className="showIcon" onClick={showPassword}/>
-                    <FaEyeSlash className="hidden cursor-pointer dontShowIcon" onClick={showPassword} />
-                  </InputAdornment>
-                )
-              },
-            }}  
-           />
+        {
+          (authLoading)?
+          <div className="text-center">
+            <CircularProgress/>
+          </div>
+          :
+            <FormControl className="w-full gap-4">
+                <h2 className="text-center font-bold text-3xl text-primary">Log in</h2>
+                <TextField onChange={handleChange} variant="outlined" type="email"  label="E-mail" name="email" required
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <MdOutlineEmail />
+                      </InputAdornment>
+                    ),
+                  },
+                }}  
+                />
 
-           <Button variant="contained">Log in</Button>
+                <TextField onChange={handleChange} name="password" className="password-input" variant="outlined"   label="Password" type="password" required
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <TbLockPassword />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end" className=" cursor-pointer">
+                        <FaEye className="showIcon" onClick={showPassword}/>
+                        <FaEyeSlash className="hidden cursor-pointer dontShowIcon" onClick={showPassword} />
+                      </InputAdornment>
+                    )
+                  },
+                }}  
+                />
 
-          </FormControl>
+                <Button variant="contained" onClick={handleSubmit}>Log in</Button>
+
+            </FormControl>
+        }
 
           <div className="flex items-center my-4">
             <div className="h-[1px] w-4/12 bg-zinc-300"></div>
@@ -194,9 +232,9 @@ const Auth = () => {
         </div>
         <div className="h-full shrink-0 w-1/2 p-4 flex flex-col justify-center">
 
-        <FormControl className="w-full gap-4">
+        <FormControl className={`w-full gap-4 `}>
             <h2 className="text-center font-bold text-3xl text-primary">Sign in</h2>
-            <TextField variant="outlined"  label="Username" required
+            <TextField variant="outlined"  label="Username" required disabled={(authMethod === 'login')? true : false}
             slotProps={{
               input: {
                 startAdornment: (
@@ -207,7 +245,7 @@ const Auth = () => {
               },
             }}  
            />
-            <TextField variant="outlined"  label="E-mail" required
+            <TextField variant="outlined"  label="E-mail" required disabled={(authMethod === 'login')? true : false}
             slotProps={{
               input: {
                 startAdornment: (
@@ -219,7 +257,7 @@ const Auth = () => {
             }}  
            />
 
-            <TextField className="passwordInput" variant="outlined" id="password-input"  label="Password" type="password" required
+            <TextField className="password-input" variant="outlined"   label="Password" type="password" required disabled={(authMethod === 'login')? true : false}
             slotProps={{
               input: {
                 startAdornment: (
@@ -237,7 +275,7 @@ const Auth = () => {
             }}  
            />
 
-            <TextField className="passwordInput" variant="outlined" id="password-input"  label="Confirm Password" type="password" required
+            <TextField className="password-input" variant="outlined"   label="Confirm Password" type="password" required disabled={(authMethod === 'login')? true : false}
             slotProps={{
               input: {
                 startAdornment: (
