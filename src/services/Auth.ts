@@ -28,12 +28,11 @@ export default function AuthServices(){
         })
         .then((response)=>response.json())
         .then((result:IdbResponse)=>{
-            if(result.body.token && result.success){
+            if(result.token && result.success){
                 localStorage.setItem(
                     'auth',
-                    JSON.stringify({token:result.body.token,user:result.body.user})
+                    JSON.stringify({token:result.token,user:result.body})
                 )
-                 return navigate('/')
             }
         })
         .catch((e:any)=>{
@@ -41,10 +40,11 @@ export default function AuthServices(){
         })
         .finally(()=>{
             setAuthLoading(false)
+            return navigate('/')
         })
     }
 
-    const login = (formData:Data)=>{
+    const login = async (formData:Data)=>{
         setAuthLoading(true)
         fetch(url+'/login',{
             method:"POST",
@@ -55,13 +55,13 @@ export default function AuthServices(){
             }
         })
         .then((response)=>response.json())
-        .then((result:IdbResponse)=>{
+        .then(async (result:IdbResponse)=>{
             if(result.token && result.success){
                 localStorage.setItem(
                     'auth',
-                    JSON.stringify({token:result.token,user:result.body.user})
+                    JSON.stringify({token:result.token,user:result.body})
                 )
-                 return navigate('/')
+                 
             }
         })
         .catch((e:any)=>{
@@ -69,8 +69,14 @@ export default function AuthServices(){
         })
         .finally(()=>{
             setAuthLoading(false)
+            return navigate('/')
         })
     }
 
-    return {authLoading, register, login}
+    const logout = ()=>{
+        localStorage.removeItem('auth')
+        location.reload()
+    }
+
+    return {authLoading, register, login, logout}
 }

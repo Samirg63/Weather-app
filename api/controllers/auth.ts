@@ -37,11 +37,19 @@ export class authController{
             //hash password
             const salt = await bcrypt.genSalt(12)
             const hashedPass = await bcrypt.hash(String(data.password),salt)
+            const userData:userData = {...data,password:hashedPass}
             
-            
+            let User:any = await UserController.addUser(userData)
+            let {password,...rest} = User._doc
 
-            await UserController.addUser({...data,password:hashedPass})
-            return ok(201,'usuário adicionado')
+
+            let secret:string|undefined = process.env.SECRET
+            let token = jwt.sign({...rest},secret!)
+
+            return {...ok(200,"Correct credentials!"),
+                body:rest,
+                token:token
+            }
         } catch (error) {
             return httpError(400,error)
         }
@@ -55,8 +63,8 @@ export class authController{
 
         try {
             if(await bcrypt.compare(String(data.password),String(user.password))){
-                let secret:string|undefined = process.env.SECRET
                 const {password,...rest} = user._doc
+                let secret:string|undefined = process.env.SECRET
                 let token = jwt.sign({...rest},secret!)
                 return {...ok(200,"Correct credentials!"),
                     body:rest,

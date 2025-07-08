@@ -150,7 +150,7 @@ const Auth = () => {
     if(authMethod === 'login'){
       login(formData)
     }else if(authMethod === 'signin'){
-      return;
+      register(formData)
     }
   }
 
@@ -232,70 +232,77 @@ const Auth = () => {
         </div>
         <div className="h-full shrink-0 w-1/2 p-4 flex flex-col justify-center">
 
-        <FormControl className={`w-full gap-4 `}>
-            <h2 className="text-center font-bold text-3xl text-primary">Sign in</h2>
-            <TextField variant="outlined"  label="Username" required disabled={(authMethod === 'login')? true : false}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MdOutlineEmail />
-                  </InputAdornment>
-                ),
-              },
-            }}  
-           />
-            <TextField variant="outlined"  label="E-mail" required disabled={(authMethod === 'login')? true : false}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MdOutlineEmail />
-                  </InputAdornment>
-                ),
-              },
-            }}  
-           />
+        {
+          (authLoading)?
+            <div className="text-center">
+              <CircularProgress/>
+            </div>
+          :
+            <FormControl className={`w-full gap-4 `}>
+                <h2 className="text-center font-bold text-3xl text-primary">Sign in</h2>
+                <TextField onChange={handleChange} variant="outlined"  label="Username" name="username" required disabled={(authMethod === 'login')? true : false}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <MdOutlineEmail />
+                      </InputAdornment>
+                    ),
+                  },
+                }}  
+                />
+                <TextField onChange={handleChange} variant="outlined"  label="E-mail" name="email" required disabled={(authMethod === 'login')? true : false}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <MdOutlineEmail />
+                      </InputAdornment>
+                    ),
+                  },
+                }}  
+                />
 
-            <TextField className="password-input" variant="outlined"   label="Password" type="password" required disabled={(authMethod === 'login')? true : false}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <TbLockPassword />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end" className=" cursor-pointer">
-                    <FaEye className="showIcon" onClick={showPassword}/>
-                    <FaEyeSlash className="hidden cursor-pointer dontShowIcon" onClick={showPassword} />
-                  </InputAdornment>
-                )
-              },
-            }}  
-           />
+                <TextField onChange={handleChange} className="password-input" variant="outlined" label="Password" name="password" type="password" required disabled={(authMethod === 'login')? true : false}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <TbLockPassword />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end" className=" cursor-pointer">
+                        <FaEye className="showIcon" onClick={showPassword}/>
+                        <FaEyeSlash className="hidden cursor-pointer dontShowIcon" onClick={showPassword} />
+                      </InputAdornment>
+                    )
+                  },
+                }}  
+                />
 
-            <TextField className="password-input" variant="outlined"   label="Confirm Password" type="password" required disabled={(authMethod === 'login')? true : false}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <TbLockPassword />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end" className=" cursor-pointer">
-                    <FaEye className="showIcon" onClick={showPassword}/>
-                    <FaEyeSlash className="hidden cursor-pointer dontShowIcon" onClick={showPassword} />
-                  </InputAdornment>
-                )
-              },
-            }}  
-           />
+                <TextField onChange={handleChange} className="password-input" variant="outlined" label="Confirm Password" name="confirmPassword" type="password" required disabled={(authMethod === 'login')? true : false}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <TbLockPassword />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end" className=" cursor-pointer">
+                        <FaEye className="showIcon" onClick={showPassword}/>
+                        <FaEyeSlash className="hidden cursor-pointer dontShowIcon" onClick={showPassword} />
+                      </InputAdornment>
+                    )
+                  },
+                }}  
+                />
 
-           <Button variant="contained">Sign in</Button>
+                <Button onClick={handleSubmit} variant="contained">Sign in</Button>
 
-          </FormControl>
+            </FormControl>
+        }
         </div>
       </div>
     </div>
