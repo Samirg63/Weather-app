@@ -2,12 +2,15 @@ import { Link } from "react-router"
 import { LuLayoutDashboard } from "react-icons/lu";
 import { CiLogout } from "react-icons/ci";
 import { FaRegHeart } from "react-icons/fa";
+
 import { useLocation } from "react-router";
+import AuthServices from "../../services/Auth";
+
 
 const Navigation = () => {
   const location = useLocation()
-
-  console.log(location)
+  const {logout} = AuthServices()
+  
 
 
 
@@ -26,7 +29,7 @@ const Navigation = () => {
       </div>
 
       <div className="pl-8">
-        <Link className="flex gap-2 items-center" to={'/logout'}><CiLogout/> Logout</Link>
+        <button onClick={logout} className="flex gap-2 items-center cursor-pointer" ><CiLogout/> Logout</button>
       </div>
     </div>
   )

@@ -2,25 +2,37 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaRegBell } from "react-icons/fa";
 import { CiUser,CiLogin } from "react-icons/ci";
 import { Link, useLocation } from 'react-router'
-import React from "react";
+import React, { useEffect } from "react";
 
 import Popper from "@mui/material/Popper";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useState } from "react";
 
+
+
 const Header = () => {
   const location = useLocation()
-  const [userPopper,setUserPopper] = useState<null | HTMLElement>(null)
-  
-  
-  function handleShowPopper(e:React.MouseEvent<HTMLElement>){
-    setUserPopper(userPopper ? null : e.currentTarget)
-  }
-  function hidePopper(){
-    setUserPopper(null)
-  }
 
-if(location.pathname !== '/auth'){
+  if(location.pathname !== '/auth'){
+
+    const [username,setUsername] = useState<string>()
+    const [userPopper,setUserPopper] = useState<null | HTMLElement>(null)
+
+    useEffect(()=>{
+      let info:any = JSON.parse(localStorage.getItem('auth')!)
+      if(info){
+        setUsername(info.user.username)
+      }
+    },[])
+    
+    
+    function handleShowPopper(e:React.MouseEvent<HTMLElement>){
+      setUserPopper(userPopper ? null : e.currentTarget)
+    }
+
+    function hidePopper(){
+      setUserPopper(null)
+    }
 
   return (
     <header className="p-6 flex justify-between w-full border-b-1 border-zinc-300">
@@ -42,7 +54,12 @@ if(location.pathname !== '/auth'){
       >
        <div id="arrow" data-popper-arrow ></div>
         <div className="py-2 px-4">
-          <Link to={'/auth'} className="flex items-center gap-1"><CiLogin/> <span className="font-semibold">LogIn</span></Link>
+          {
+            (username)?
+            <h3>Welcome {username}</h3>
+            :
+            <Link to={'/auth'} className="flex items-center gap-1"><CiLogin/> <span className="font-semibold">LogIn</span></Link>
+          }
         </div>
       </Popper>
     </header>
