@@ -200,10 +200,10 @@ function pinCity(){
           <GaugeReferenceArc />
           <GaugeValueArc />
           <linearGradient id="Uv-Gradient">
-            <stop offset="25%" stop-color="oklch(62.7% 0.194 149.214)" />
-            <stop offset="50%" stop-color="oklch(85.2% 0.199 91.936)" />
-            <stop offset="75%" stop-color="oklch(64.6% 0.222 41.116)" />
-            <stop offset="100%" stop-color="oklch(57.7% 0.245 27.325)" />
+            <stop offset="25%" stopColor="oklch(62.7% 0.194 149.214)" />
+            <stop offset="50%" stopColor="oklch(85.2% 0.199 91.936)" />
+            <stop offset="75%" stopColor="oklch(64.6% 0.222 41.116)" />
+            <stop offset="100%" stopColor="oklch(57.7% 0.245 27.325)" />
           </linearGradient>
           <GaugeValueText text={"Low"}/>
         </GaugeContainer>
