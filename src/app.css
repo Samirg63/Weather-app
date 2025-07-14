@@ -2,11 +2,14 @@
 
 body{
   background-color: #f0f0f0;
+  overflow-y: hidden;
 }
 
 *{
   box-sizing: border-box;
 }
+
+
 
 /*Mui customs*/
 .MuiChartsAxis-root{display: none;}
