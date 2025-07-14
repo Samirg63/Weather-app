@@ -20,10 +20,10 @@ import Auth from './pages/Auth'
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <div className='flex'>
+    <div className='flex h-full'>
 
       <Navigation/>
-      <div className='w-full h-full'>
+      <div className='w-full h-full overflow-y-auto'>
         <Header/>
         <Container> 
           <Routes>

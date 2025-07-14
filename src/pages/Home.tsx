@@ -21,7 +21,8 @@ import convertData from '../utils/convertData';
 const Home = () => {
 
   const {data, getDataByLatLong,loading} = AccuWeather()
-  const {rainChance} = convertData()
+  const {rainChance,getImage} = convertData()
+  const [actTime,setActTime] = useState<string>('00:00')
 
   useEffect(()=>{
     if('geolocation' in navigator){
@@ -37,6 +38,23 @@ const Home = () => {
     }else{
       alert("Serviço de geolocalização indisponivel!")
     }
+
+    const date = new Date()
+
+    if(date.getHours() >= 12){
+      setActTime(date.getHours()+':'+date.getMinutes()+' PM')
+    }else{
+      setActTime(date.getHours()+':'+date.getMinutes()+' AM')
+    }
+
+    let interval = setInterval(() => {
+      if(date.getHours() >= 12){
+        setActTime(date.getHours()+':'+date.getMinutes()+' PM')
+      }else{
+        setActTime(date.getHours()+':'+date.getMinutes()+' AM')
+      }
+    }, 1000*10);
+    return ()=>clearInterval(interval)
   },[])
   
 
@@ -85,84 +103,88 @@ function pinCity(){
         </div>
         :
 
-        <div className='w-9/12 grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4'>
+        <div className='w-9/12 grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4 h-full'>
         
         {/* Main Display */}
-          <div className='rounded-xl relative bg-[url(/assets/Backgrounds/Snow.jpg)] flex justify-between text-zin-900 bg-no-repeat bg-cover row-span-2 col-span-2 p-4'>
-                    
-              <div className=' w-1/2 pr-4 flex flex-col justify-between'>
-              
-                <div className='flex justify-between items-center'>
-                  <div className='flex gap-2 items-center text-lg relative'>
-                    <IoLocationSharp/>
-                    <h3 className='font-semibold'>{data.LocalizedName}</h3>
-                    <div className=' cursor-pointer' onClick={pinCity}>
-                      <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
-                      <IoHeart 
-                      className={`text-2xl absolute top-1 z-[0] duration-200
-                      ${(isPinned)? "fill-red-400" : "fill-[rgba(240,240,240,.5)]"}
-                        `}/>
+          <div className={`rounded-xl relative bg-zinc-400  text-zin-900 col-span-2 row-span-2`}>
+              <img src={getImage(data.IconPhrase,data.IsDaylight)} alt="" className='absolute h-full w-full rounded-[inherit] brightness-[85%]' />
+
+              <div className='flex justify-between p-4 absolute top-0 z-10 w-full h-full'>
+                  
+                <div className=' w-1/2 pr-4 flex flex-col justify-between'>
+                
+                  <div className='flex justify-between items-center'>
+                    <div className='flex gap-2 items-center text-lg relative'>
+                      <IoLocationSharp/>
+                      <h3 className='font-semibold'>{data.LocalizedName}</h3>
+                      <div className=' cursor-pointer' onClick={pinCity}>
+                        <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
+                        <IoHeart 
+                        className={`text-2xl absolute top-1 z-[0] duration-200
+                        ${(isPinned)? "fill-red-400" : "fill-[rgba(240,240,240,.5)]"}
+                          `}/>
+                      </div>
                     </div>
+
+                    <span>Today {actTime}</span>
                   </div>
 
-                  <span>Today 19:04 PM</span>
+                  <div className='text-center font-semibold'>
+                    <h2 className='text-[80px]'>{data.Temperature.Value}º{data.Temperature.Unit}</h2>
+                    <p className='capitalize'>{data.IconPhrase}</p>
+                  </div>
+
+                  <div className='flex justify-between '>
+
+                    <div className="flex items-center gap-2">
+                      <LuWindArrowDown/>
+                      <p>{data.Pressure.Metric.Value} {data.Pressure.Metric.Unit}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IoWaterOutline/>
+                      <p>{data.RainProbability}%</p>
+                    </div>
+                    <div className="flex items-center gap-2 text-zinc-900">
+                      <FaWind/>
+                      <p>{data.Wind.Speed.Value} {data.Wind.Speed.Unit}</p>
+                    </div>
+
+                  </div>
                 </div>
 
-                <div className='text-center font-semibold'>
-                  <h2 className='text-[80px]'>{data.Temperature.Value}º{data.Temperature.Unit}</h2>
-                  <p className='capitalize'>{data.IconPhrase}</p>
+                <div  className='bg-[rgba(228,228,231,.75)] text-zinc-900 rounded-xl w-1/2 p-4 flex flex-col justify-between'>
+                  
+            
+                  <div className='font-semibold text-xl'>
+                    <h3>Temperature</h3>
+                  </div>
+                  <LineChart
+                  className='ml-[-25px]'
+                    series={[{data:[15,14,16,12]}]}
+                    height={130}
+                    width={370}
+                  />
+                  <div className='flex justify-between gap-4'>
+                    <div className='text-center'>
+                      <p>Morning</p>
+                      <p className='font-semibold'>15º</p>
+                    </div>
+                    <div className='text-center'>
+                      <p>Afternoon</p>
+                      <p className='font-semibold'>14º</p>
+                    </div>
+                    <div className='text-center'>
+                      <p>Evening</p>
+                      <p className='font-semibold'>16º</p>
+                    </div>
+                    <div className='text-center'>
+                      <p>Night</p>
+                      <p className='font-semibold'>12º</p>
+                    </div>
+                  </div>    
+                  
                 </div>
-
-                <div className='flex justify-between '>
-
-                  <div className="flex items-center gap-2">
-                    <LuWindArrowDown/>
-                    <p>{data.Pressure.Metric.Value} {data.Pressure.Metric.Unit}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <IoWaterOutline/>
-                    <p>{data.RainProbability}%</p>
-                  </div>
-                  <div className="flex items-center gap-2 text-zinc-900">
-                    <FaWind/>
-                    <p>{data.Wind.Speed.Value} {data.Wind.Speed.Unit}</p>
-                  </div>
-
-                </div>
-              </div>
-
-              <div  className='bg-[rgba(228,228,231,.75)] text-zinc-900 rounded-xl w-1/2 p-4 flex flex-col justify-between'>
-                
-          
-                <div className='font-semibold text-xl'>
-                  <h3>Temperature</h3>
-                </div>
-                <LineChart
-                className='ml-[-25px]'
-                  series={[{data:[15,14,16,12]}]}
-                  height={130}
-                  width={370}
-                />
-                <div className='flex justify-between gap-4'>
-                  <div className='text-center'>
-                    <p>Morning</p>
-                    <p className='font-semibold'>15º</p>
-                  </div>
-                  <div className='text-center'>
-                    <p>Afternoon</p>
-                    <p className='font-semibold'>14º</p>
-                  </div>
-                  <div className='text-center'>
-                    <p>Evening</p>
-                    <p className='font-semibold'>16º</p>
-                  </div>
-                  <div className='text-center'>
-                    <p>Night</p>
-                    <p className='font-semibold'>12º</p>
-                  </div>
-                </div>    
-                
-              </div>
+              </div>   
             
           </div>
 
@@ -186,7 +208,7 @@ function pinCity(){
             <Gauge 
             width={100} 
             height={100} 
-            value={32} 
+            value={data.RainProbability} 
             text={rainChance(data.RainProbability)} 
             outerRadius={45} 
             innerRadius={50} 

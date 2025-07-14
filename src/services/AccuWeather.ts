@@ -7,7 +7,7 @@ export default function AccuWeather(){
     const [data,setData] = useState<any>({})
     const [loading,setLoading] = useState<boolean>(false)
     const url = "http://dataservice.accuweather.com"
-    const apiKey = '7tC9vLQ5WGPbaLw0V3BHJt2NXZpZ0wXA'
+    const apiKey = 'pGYSeIUpIO45vOMMkPtT9VuzX78yhpgP'
     
 
 
@@ -48,7 +48,7 @@ export default function AccuWeather(){
         .then((response)=>response.json())
         .then((result)=>{
             setData({...result[0],...addInfo})
-            console.log({...result[0],...addInfo})       
+                  
         })
         .catch((e)=>{
             console.log(e)
