@@ -19,7 +19,6 @@ export default function convertData(){
             if((phrase.includes('sunny')||
                 phrase.includes('hot')) && !phrase.includes('storms') && !phrase.includes('showers')){
 
-                    console.log('aqui')
             return '/assets/Backgrounds/SunDay.jpg'
 
             }else if((phrase.includes('clouds') ||
@@ -42,14 +41,14 @@ export default function convertData(){
 
             }else if(phrase.includes('storms')){
 
-            return '/assets/Backgrounds/Storm.jpg'
+            return '/assets/Backgrounds/Storm-icon.jpg'
 
             }else if(phrase.includes('snow')||
                 phrase.includes('ice')||
                 phrase.includes('sleet')||
                 phrase.includes('freezing')){
             
-            return '/assets/Backgrounds/Snow.jpg'
+            return '/assets/Backgrounds/Snow-icon.jpg'
 
             }else if(phrase.includes('windy')){
 
@@ -92,15 +91,65 @@ export default function convertData(){
                 phrase.includes('sleet')||
                 phrase.includes('freezing')){
             
-            return '/assets/Backgrounds/Snow.jpg'
+            return '/assets/Backgrounds/Snow-icon.jpg'
 
             }else if(phrase.includes('windy')){
 
-                return '/assets/Backgrounds/Wind.jpg'
+                return '/assets/Backgrounds/Wind-icon.jpg'
 
             }
         }
     }
 
-    return {rainChance,getImage}
+    const getIcon = (phrase:string)=>{
+        phrase = phrase.toLowerCase()
+
+        
+            
+            if((phrase.includes('sunny')||
+            phrase.includes('clear')||
+                phrase.includes('hot')) && !phrase.includes('storms') && !phrase.includes('showers')){
+
+            return '/assets/Icons/Sun-icon.png'
+
+            }else if((phrase.includes('clouds') ||
+                phrase.includes('cloudy') ||
+                phrase.includes('fog') ||
+                phrase.includes('dreary') ||
+                phrase.includes('hazy') ||
+                phrase.includes('flurries')||
+                phrase.includes('cold'))
+                
+                && !phrase.includes('snow') && !phrase.includes('storm')){
+
+            return '/assets/Icons/CloudySun-icon.png'
+
+            }else if((phrase.includes('showers') ||
+                phrase.includes('rain'))
+                && !phrase.includes('snow')){
+
+            return '/assets/Icons/Rain-icon.png'
+
+            }else if(phrase.includes('storms')){
+
+            return '/assets/Icons/Storm.png'
+
+            }else if(phrase.includes('snow')||
+                phrase.includes('ice')||
+                phrase.includes('sleet')||
+                phrase.includes('freezing')){
+            
+            return '/assets/Icons/Snow.png'
+
+            }else if(phrase.includes('windy')){
+
+                return '/assets/Icons/Wind-icon.png'
+
+            }
+
+       
+        
+    }
+
+    return {rainChance,getImage,getIcon}
 }
