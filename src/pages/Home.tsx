@@ -20,43 +20,82 @@ import convertData from '../utils/convertData';
 
 const Home = () => {
 
-  const {data, getDataByLatLong,loading} = AccuWeather()
+  const {data, getDataByLatLong,loading,nexthoursData,getNextHoursInfo} = AccuWeather()
   const {rainChance,getImage} = convertData()
   const [actTime,setActTime] = useState<string>('00:00')
+  const [chartData,setChartdata] = useState<any>([])
+
+
+  function fetchChartData(){
+    let arrData = []
+  
+    for (let index = 1; index <= nexthoursData.length; index++) {
+      if(index % 3 === 0){
+        let hour = nexthoursData[index-1].DateTime.slice(11,13)
+        let complement = (parseInt(hour) >=12)? 'PM' : 'AM'
+        nexthoursData[index-1].formatedTime = hour+' '+complement
+        arrData.push(nexthoursData[index-1])
+      }
+    }
+    
+    console.log(arrData)
+    setChartdata(arrData)
+  }
+  
+  
 
   useEffect(()=>{
+
+   
+    
     if('geolocation' in navigator){
       navigator.geolocation.getCurrentPosition((position)=>{
         let lat = position.coords.latitude
         let long = position.coords.longitude
         async function fetchData(){
           await getDataByLatLong(lat,long)
+          await getNextHoursInfo()
+          
+            
+          
         }
         fetchData()
+
+        
+        
         
       })
     }else{
       alert("Serviço de geolocalização indisponivel!")
     }
 
-    const date = new Date()
-
-    if(date.getHours() >= 12){
-      setActTime(date.getHours()+':'+date.getMinutes()+' PM')
-    }else{
-      setActTime(date.getHours()+':'+date.getMinutes()+' AM')
+    if(Object.keys(nexthoursData)){
+      fetchChartData()
     }
 
-    let interval = setInterval(() => {
-      if(date.getHours() >= 12){
-        setActTime(date.getHours()+':'+date.getMinutes()+' PM')
-      }else{
-        setActTime(date.getHours()+':'+date.getMinutes()+' AM')
-      }
-    }, 1000*10);
-    return ()=>clearInterval(interval)
+
+    const date = new Date()
+    if(date.getHours() >= 12){
+      setActTime(String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0')+' PM')
+    }else{
+      setActTime(String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0')+' AM')
+    }
+    
+
+    
   },[])
+
   
+  
+  function attTime(){
+    const date = new Date()
+    if(date.getHours() >= 12){
+      setActTime(String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0')+' PM')
+    }else{
+      setActTime(String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0')+' AM')
+    }
+  }
+  setInterval(() => {attTime()}, 1000*20);
 
 
 // Temp Variables
@@ -68,6 +107,8 @@ function pinCity(){
 
 
 //End Temp Variables
+
+
 
   function GaugePointer(){
     const { valueAngle, outerRadius, cx, cy } = useGaugeState();
@@ -92,8 +133,6 @@ function pinCity(){
         </g>
       );
   }
-  
-
   return (
     <Container customClass="flex ">
       {
@@ -106,7 +145,9 @@ function pinCity(){
         <div className='w-9/12 grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4 h-full'>
         
         {/* Main Display */}
-          <div className={`rounded-xl relative bg-zinc-400  text-zin-900 col-span-2 row-span-2`}>
+          <div className={`rounded-xl relative bg-zinc-400  text-zin-900 col-span-2 row-span-2
+            ${(data.IconPhrase.includes('clear') ||data.IconPhrase.includes('hot') )&& !data.IsDaylight ? 'text-white' : 'text-zinc-900'}
+            `}>
               <img src={getImage(data.IconPhrase,data.IsDaylight)} alt="" className='absolute h-full w-full rounded-[inherit] brightness-[85%]' />
 
               <div className='flex justify-between p-4 absolute top-0 z-10 w-full h-full'>
@@ -144,7 +185,7 @@ function pinCity(){
                       <IoWaterOutline/>
                       <p>{data.RainProbability}%</p>
                     </div>
-                    <div className="flex items-center gap-2 text-zinc-900">
+                    <div className="flex items-center gap-2">
                       <FaWind/>
                       <p>{data.Wind.Speed.Value} {data.Wind.Speed.Unit}</p>
                     </div>
@@ -158,29 +199,35 @@ function pinCity(){
                   <div className='font-semibold text-xl'>
                     <h3>Temperature</h3>
                   </div>
-                  <LineChart
-                  className='ml-[-25px]'
-                    series={[{data:[15,14,16,12]}]}
-                    height={130}
-                    width={370}
-                  />
+                  {
+                    (chartData.length > 0)?
+                    <LineChart
+                    className='ml-[-25px]'
+                      series={[{data:[chartData[0].Temperature.Value,chartData[1].Temperature.Value,chartData[2].Temperature.Value,chartData[3].Temperature.Value]}]}
+                      height={130}
+                      width={370}
+                    />
+                    :
+                    <div className='text-center'>
+                      <CircularProgress/>
+                    </div>
+                  }
                   <div className='flex justify-between gap-4'>
-                    <div className='text-center'>
-                      <p>Morning</p>
-                      <p className='font-semibold'>15º</p>
-                    </div>
-                    <div className='text-center'>
-                      <p>Afternoon</p>
-                      <p className='font-semibold'>14º</p>
-                    </div>
-                    <div className='text-center'>
-                      <p>Evening</p>
-                      <p className='font-semibold'>16º</p>
-                    </div>
-                    <div className='text-center'>
-                      <p>Night</p>
-                      <p className='font-semibold'>12º</p>
-                    </div>
+                    {
+                      (chartData.length > 0)?
+                        chartData.map((data:any,index:number)=>{
+
+                          return(
+                            <div className='text-center' key={index}>
+                              <p className='font-semibold'>{data.formatedTime}</p>
+                              <p >{data.Temperature.Value.toFixed(0)}º{data.Temperature.Unit}</p>
+                            </div>
+                          )
+                        })
+                      :
+                      null
+                    }
+                    
                   </div>    
                   
                 </div>
