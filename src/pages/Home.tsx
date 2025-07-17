@@ -12,67 +12,78 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 //Function
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 
 //MyFunction
 import AccuWeather from '../services/AccuWeather';
 import convertData from '../utils/convertData';
+import UserServices from '../services/User';
 
 
 const Home = () => {
 
-  const {data, getDataByLatLong,loading,nexthoursData,getNextHoursInfo} = AccuWeather()
+  const {data, getDataByLatLong,getAllDataByKey,loading,chartData,getNextHoursInfo} = AccuWeather()
   const {rainChance,getImage} = convertData()
-  const [actTime,setActTime] = useState<string>('00:00')
-  const [chartData,setChartdata] = useState<any>([])
-
-
-  function fetchChartData(){
-    let arrData = []
   
-    for (let index = 1; index <= nexthoursData.length; index++) {
-      if(index % 3 === 0){
-        let hour = nexthoursData[index-1].DateTime.slice(11,13)
-        let complement = (parseInt(hour) >=12)? 'PM' : 'AM'
-        nexthoursData[index-1].formatedTime = hour+' '+complement
-        arrData.push(nexthoursData[index-1])
-      }
-    }
+  const [actTime,setActTime] = useState<string>('00:00')
+  const [userData,setUserData] = useState<any>(null)
+  const [isPinned,setIsPinned] = useState<boolean>(false)
+  const params = useParams()
+  const {updatePin} = UserServices()
+
+
+ function verifyPin(){
+  
     
-    console.log(arrData)
-    setChartdata(arrData)
-  }
+
+      if(userData){
+      
+      let result:boolean = false
+      userData.user.pins.map((key:string)=>{
+        if(key === data.Key){
+          result = true
+        }
+      })
+      return result
+    }else{
+      return false
+    }
+  
+     
+ }
   
   
 
   useEffect(()=>{
-
    
-    
-    if('geolocation' in navigator){
-      navigator.geolocation.getCurrentPosition((position)=>{
+    if(params.key){
+      async function fetchData(){
+        await getAllDataByKey(params.key!)
+        await getNextHoursInfo(params.key!)   
+      }
+        fetchData()    
+          
+      
+    }else{
+      if('geolocation' in navigator){
+        navigator.geolocation.getCurrentPosition((position)=>{
         let lat = position.coords.latitude
         let long = position.coords.longitude
         async function fetchData(){
           await getDataByLatLong(lat,long)
-          await getNextHoursInfo()
-          
-            
-          
+          await getNextHoursInfo()   
         }
-        fetchData()
-
+          fetchData()
         
-        
-        
-      })
-    }else{
-      alert("Serviço de geolocalização indisponivel!")
+        })
+      }else{
+        alert("Serviço de geolocalização indisponivel!")
+      }
     }
 
-    if(Object.keys(nexthoursData)){
-      fetchChartData()
-    }
-
+    
+    
+    
 
     const date = new Date()
     if(date.getHours() >= 12){
@@ -82,10 +93,11 @@ const Home = () => {
     }
     
 
-    
+    let userAuth = JSON.parse(localStorage.getItem('auth')!)
+      if(userAuth){
+        setUserData(userAuth)
+      }
   },[])
-
-  
   
   function attTime(){
     const date = new Date()
@@ -98,15 +110,35 @@ const Home = () => {
   setInterval(() => {attTime()}, 1000*20);
 
 
-// Temp Variables
-const [isPinned,setIsPinned] = useState<boolean>(false)
+async function pinCity(){
+  if(userData){
+    
+    if(verifyPin()){
+      let pinnedCitys:string[] =userData.user.pins.filter((key:string) => key !== data.Key) 
+      if(await updatePin(pinnedCitys,userData.user._id)){
+        let newUserData = userData
+        newUserData.user.pins = pinnedCitys
+        setUserData(newUserData)
+        localStorage.setItem('auth',JSON.stringify(newUserData))
+        setIsPinned(false)
+      }
+    }else{
+      let pinnedCitys:string[] = userData.user.pins
+      pinnedCitys.push(data.Key)
 
-function pinCity(){
-  setIsPinned(!isPinned)
+      if(await updatePin(pinnedCitys,userData.user._id)){
+        let newUserData = userData
+        newUserData.user.pins = pinnedCitys
+        setUserData(newUserData)
+        localStorage.setItem('auth',JSON.stringify(newUserData))   
+        setIsPinned(true)  
+      }
+      
+    }
+  }else{
+    alert('You need to log in!')
+  }
 }
-
-
-//End Temp Variables
 
 
 
@@ -133,6 +165,8 @@ function pinCity(){
         </g>
       );
   }
+
+  
   return (
     <Container customClass="flex ">
       {
@@ -162,7 +196,7 @@ function pinCity(){
                         <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
                         <IoHeart 
                         className={`text-2xl absolute top-1 z-[0] duration-200
-                        ${(isPinned)? "fill-red-400" : "fill-[rgba(240,240,240,.5)]"}
+                        ${(verifyPin() || isPinned)? 'fill-red-400' : "fill-[rgba(240,240,240,.5)]"}
                           `}/>
                       </div>
                     </div>
@@ -171,7 +205,7 @@ function pinCity(){
                   </div>
 
                   <div className='text-center font-semibold'>
-                    <h2 className='text-[80px]'>{data.Temperature.Value}º{data.Temperature.Unit}</h2>
+                    <h2 className='text-[80px]'>{data.Temperature.Value.toFixed(0)}º{data.Temperature.Unit}</h2>
                     <p className='capitalize'>{data.IconPhrase}</p>
                   </div>
 
@@ -249,7 +283,7 @@ function pinCity(){
           <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
           <div id='rain-chance' className='flex flex-col justify-between h-full'>
               <h3 className='font-semibold text-xl'>Rain Chance</h3>
-              <p>Today rain chance</p>
+              <p>Next hour rain chance</p>
               <h3 className='font-semibold text-xl'>{data.RainProbability}%</h3>
             </div>
             <Gauge 
@@ -317,7 +351,7 @@ function pinCity(){
         
         </div>
       }
-      <NextDaysInfo />
+      <NextDaysInfo cityKey={(params.key)? params.key : ''} />
     </Container>
   )
 }

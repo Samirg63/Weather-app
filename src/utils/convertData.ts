@@ -41,14 +41,14 @@ export default function convertData(){
 
             }else if(phrase.includes('storms')){
 
-            return '/assets/Backgrounds/Storm-icon.jpg'
+            return '/assets/Backgrounds/Storm.jpg'
 
             }else if(phrase.includes('snow')||
                 phrase.includes('ice')||
                 phrase.includes('sleet')||
                 phrase.includes('freezing')){
             
-            return '/assets/Backgrounds/Snow-icon.jpg'
+            return '/assets/Backgrounds/Snow.jpg'
 
             }else if(phrase.includes('windy')){
 
@@ -91,11 +91,11 @@ export default function convertData(){
                 phrase.includes('sleet')||
                 phrase.includes('freezing')){
             
-            return '/assets/Backgrounds/Snow-icon.jpg'
+            return '/assets/Backgrounds/Snow.jpg'
 
             }else if(phrase.includes('windy')){
 
-                return '/assets/Backgrounds/Wind-icon.jpg'
+                return '/assets/Backgrounds/Wind.jpg'
 
             }
         }
@@ -151,5 +151,95 @@ export default function convertData(){
         
     }
 
-    return {rainChance,getImage,getIcon}
+    const getWidget = (phrase:string,isDay:boolean)=>{
+        phrase = phrase.toLowerCase()
+
+        if(isDay){
+            
+            if((phrase.includes('sunny')||
+                phrase.includes('hot')) && !phrase.includes('storms') && !phrase.includes('showers')){
+
+            return '/assets/Widgets/Sun-Widget.png'
+
+            }else if((phrase.includes('clouds') ||
+                phrase.includes('cloudy') ||
+                phrase.includes('fog') ||
+                phrase.includes('dreary') ||
+                phrase.includes('hazy') ||
+                phrase.includes('flurries')||
+                phrase.includes('cold'))
+                
+                && !phrase.includes('snow') && !phrase.includes('storm')){
+
+            return '/assets/Widgets/CloudySun-Widget.png'
+
+            }else if((phrase.includes('showers') ||
+                phrase.includes('rain'))
+                && !phrase.includes('snow')){
+
+            return '/assets/Widgets/Rain-Widget.png'
+
+            }else if(phrase.includes('storms')){
+
+            return '/assets/Widgets/Storm-Widget.png'
+
+            }else if(phrase.includes('snow')||
+                phrase.includes('ice')||
+                phrase.includes('sleet')||
+                phrase.includes('freezing')){
+            
+            return '/assets/Widgets/Snow-Widget.png'
+
+            }else if(phrase.includes('windy')){
+
+                return '/assets/Widgets/Wind-Widget.png'
+
+            }
+
+        }else{
+
+
+             if((phrase.includes('clear')||
+             phrase.includes('hot'))
+                && !phrase.includes('storms') && !phrase.includes('showers')){
+
+            return '/assets/Widgets/Night-Widget.png'
+
+            }else if((phrase.includes('clouds') ||
+            phrase.includes('cloudy') ||
+            phrase.includes('fog') ||
+            phrase.includes('dreary') ||
+            phrase.includes('hazy') ||
+            phrase.includes('flurries')||
+            phrase.includes('cold'))    
+            && !phrase.includes('snow') && !phrase.includes('storm') && !phrase.includes('showers')){
+
+            return '/assets/Widgets/CloudyNight-Widget.png'
+
+            }else if(phrase.includes('showers')||
+                phrase.includes('rain') 
+                && !phrase.includes('snow')){
+
+            return '/assets/Widgets/NightRain-Widget.png'
+
+            }else if(phrase.includes('storms')){
+
+            return '/assets/Widgets/NightStorm-Widget.png'
+
+            }else if(phrase.includes('snow')||
+                phrase.includes('ice')||
+                phrase.includes('sleet')||
+                phrase.includes('freezing')){
+            
+            return '/assets/Widgets/NightSnow-Widget.png'
+
+            }else if(phrase.includes('windy')){
+
+                return '/assets/Widgets/NightWind-Widget.png'
+
+            }
+        }
+    }
+
+    return {rainChance,getImage,getIcon, getWidget}
 }
