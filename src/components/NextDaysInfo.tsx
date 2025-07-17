@@ -3,7 +3,11 @@ import AccuWeather from "../services/AccuWeather"
 import CircularProgress from "@mui/material/CircularProgress"
 import convertData from "../utils/convertData"
 
-const NextDaysInfo = () => {
+interface Props{
+  cityKey?:string
+}
+
+const NextDaysInfo = ({cityKey=''}:Props) => {
 
   const {nextdaysLoading,getNextDaysInfo,nextdaysData, nextHoursLoading,nexthoursData,getNextHoursInfo} = AccuWeather()
   const {getIcon} = convertData()
@@ -11,8 +15,13 @@ const NextDaysInfo = () => {
 
   useEffect(()=>{
     async function getData(){
-      await getNextDaysInfo()
-      await getNextHoursInfo()
+      if(cityKey){
+        await getNextDaysInfo(cityKey)
+        await getNextHoursInfo(cityKey)
+      }else{
+        await getNextDaysInfo()
+        await getNextHoursInfo()
+      }
     }
 
     getData()

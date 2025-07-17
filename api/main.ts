@@ -5,6 +5,7 @@ import { Mongo } from './db/mongo';
 
 //routes
 import authRouter from './routes/auth';
+import userRouter from './routes/user';
 
 async function main(){
     const hostname = 'localhost'
@@ -19,6 +20,7 @@ async function main(){
 
     //Rotas
     app.use('/auth',authRouter)
+    app.use('/user',userRouter)
 
     app.listen(port,()=>{
         console.log(`servidor rodando em ${hostname}:${port}`)

@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router"
 
+
 //Interfaces
 import type { IdbResponse } from "../utils/interfaces"
 
@@ -69,7 +70,7 @@ export default function AuthServices(){
         })
         .finally(()=>{
             setAuthLoading(false)
-            return navigate('/')
+            return navigate('/',{replace:true})
         })
     }
 

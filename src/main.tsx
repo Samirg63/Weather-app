@@ -30,6 +30,7 @@ createRoot(document.getElementById('root')!).render(
               <Route index path="/" element={<Home/>}/>
               <Route path="/pins" element={<Pins/>}/>
               <Route path={'/auth'} element={<Auth />}/>
+              <Route path={'/:key'} element={<Home />}/>
           </Routes>
         </Container>
       </div>

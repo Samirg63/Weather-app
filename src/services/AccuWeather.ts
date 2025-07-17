@@ -6,10 +6,16 @@ export default function AccuWeather(){
     
     const [data,setData] = useState<any>({})
     const [nextdaysData,setNextdaysData]= useState<any>({})
-    const [nexthoursData,setNexthoursData]= useState<any>([])
+    const [nexthoursData,setNexthoursData]= useState<any[]>([])
+    const [chartData,setChartData] = useState<any>({})
+    const [widgetsData,setWidgetsData] = useState<any[]>([])
+
     const [loading,setLoading] = useState<boolean>(false)
     const [nextdaysLoading,setNextdaysLoading] = useState<boolean>(false)
     const [nextHoursLoading,setNextHoursLoading] = useState<boolean>(false)
+    const [widgetsLoading,setWidgetsLoading] = useState<boolean>(false)
+
+
     const url = "http://dataservice.accuweather.com"
     const apiKey = '7tC9vLQ5WGPbaLw0V3BHJt2NXZpZ0wXA'
     
@@ -24,13 +30,32 @@ export default function AccuWeather(){
         .then(async (result)=>{
             if(result.Key){
                 
-                getPressure(result.Key,{LocalizedName:result.LocalizedName})
+                getPressure(result.Key,{LocalizedName:result.LocalizedName,Key:result.Key})
             }
         })
         .catch((e)=>{
             console.log(e)
         })
     }
+    
+    const getAllDataByKey = async (key:string)=>{
+
+        setLoading(true)
+        await fetch(url+`/locations/v1/${key}?apikey=${apiKey}&language=pt-BR`,{
+            method:"GET"
+        })
+        .then((response)=>response.json())
+        .then(async (result)=>{
+            if(result.Key){
+                
+                getPressure(result.Key,{LocalizedName:result.LocalizedName,Key:result.Key})
+            }
+        })
+        .catch((e)=>{
+            console.log(e)
+        })
+    }
+    
 
     const getPressure = async(key:string,addInfo?:any)=>{
         await fetch(url+`/currentconditions/v1/${key}?apikey=${apiKey}&details=true&language=en-US`,{
@@ -62,7 +87,7 @@ export default function AccuWeather(){
         })
     }
 
-    const getNextDaysInfo = async(key?:number)=>{
+    const getNextDaysInfo = async(key?:string)=>{
 
         setNextdaysLoading(true)
 
@@ -103,7 +128,7 @@ export default function AccuWeather(){
         })
     }}
 
-    const getNextHoursInfo = async(key?:number)=>{
+    const getNextHoursInfo = async(key?:string)=>{
         setNextHoursLoading(true)
 
         if(key){
@@ -113,7 +138,18 @@ export default function AccuWeather(){
             .then((response)=>response.json())
             .then((result)=>{
                 setNexthoursData(result)
-                    
+                
+                let arrData = []
+                  
+                    for (let index = 1; index <= result.length; index++) {
+                      if(index % 3 === 0){
+                        let hour = result[index-1].DateTime.slice(11,13)
+                        let complement = (parseInt(hour) >=12)? 'PM' : 'AM'
+                        result[index-1].formatedTime = hour+' '+complement
+                        arrData.push(result[index-1])
+                      }
+                    }
+                setChartData(arrData)
             })
             .catch((e)=>{
                 console.log(e)
@@ -144,5 +180,81 @@ export default function AccuWeather(){
     }
     }
 
-    return {data,getDataByLatLong,getNextDaysInfo,loading,nextdaysLoading,nextHoursLoading,nextdaysData,nexthoursData,getNextHoursInfo}
+    const getWidgetsData = async(keys:string[])=>{
+        setWidgetsLoading(true)
+        let requests:any[] = []
+        keys.map((key:string)=>{
+            requests.push(
+                fetch(url+`/locations/v1/${key}?apikey=${apiKey}`,{method:'GET'})
+            )
+        })
+
+        await Promise.all(requests)
+        .then((responseArr)=>{
+            let responseJson:any = []
+            responseArr.map((item:any)=>{
+                responseJson.push(item.json())
+            })
+            
+            return responseJson
+        })
+        .then(async(resultArr)=>{
+            await Promise.all(resultArr)
+            .then((result)=>{
+
+                //Resume Arr
+                let arr:any[] = []
+                result.map((item:any)=>{
+                    arr.push({LocalizedName:item.LocalizedName,AdministrativeArea:item.AdministrativeArea})
+                })
+                
+                getWidgetsForecastData(keys,arr)
+            })
+            .catch((e:any)=>{
+                console.log(e)
+            })
+        })
+
+        
+        
+    }
+
+    const getWidgetsForecastData = async(keys:string[],addInfo:any[])=>{
+        let requests:any[] = []
+        keys.map((key:string)=>{
+            requests.push(
+                fetch(url+`/forecasts/v1/hourly/1hour/${key}?apikey=${apiKey}&metric=true`,{method:'GET'})
+            )
+        })
+
+        await Promise.all(requests)
+        .then((responseArr)=>{
+            let responseJson:any = []
+            responseArr.map((item:any)=>{
+                responseJson.push(item.json())
+            })
+            
+            return responseJson
+        })
+        .then(async(resultArr)=>{
+            await Promise.all(resultArr)
+            .then((result)=>{
+                
+                //Resume Arr
+                let arr:any[] = []
+                result.map((item:any,index:number)=>{
+                    arr.push({...addInfo[index],IconPhrase:item[0].IconPhrase,Temperature:item[0].Temperature.Value,Unit:item[0].Temperature.Unit,IsDaylight:item[0].IsDaylight})
+                })
+                setWidgetsData(arr)
+            })
+            .catch((e:any)=>{
+                console.log(e)
+            })
+            .finally(()=>{
+                setWidgetsLoading(false)
+            })
+        })
+    }
+
+    return {data,chartData,getWidgetsData,widgetsData,widgetsLoading,getDataByLatLong,getAllDataByKey,getNextDaysInfo,loading,nextdaysLoading,nextHoursLoading,nextdaysData,nexthoursData,getNextHoursInfo}
 }
