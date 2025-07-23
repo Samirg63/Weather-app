@@ -17,7 +17,7 @@ export default function AccuWeather(){
 
 
     const url = "http://dataservice.accuweather.com"
-    const apiKey = '7tC9vLQ5WGPbaLw0V3BHJt2NXZpZ0wXA'
+    const apiKey = '3uysBEKxwyJylsoXTUxiOB9Y9FwdqU0F'
     
 
 
@@ -48,7 +48,7 @@ export default function AccuWeather(){
         .then(async (result)=>{
             if(result.Key){
                 
-                getPressure(result.Key,{LocalizedName:result.LocalizedName,Key:result.Key})
+                await getPressure(result.Key,{LocalizedName:result.LocalizedName,Key:result.Key})
             }
         })
         .catch((e)=>{
@@ -62,8 +62,8 @@ export default function AccuWeather(){
             method:"GET"
         })
         .then((response)=>response.json())
-        .then((result)=>{ 
-            getDataByKey(key,{Pressure:result[0].Pressure,...addInfo})   
+        .then(async (result)=>{ 
+            await getDataByKey(key,{Pressure:result[0].Pressure,...addInfo})   
         })
         .catch((e)=>{
             console.log(e)
