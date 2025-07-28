@@ -9,7 +9,7 @@ import { Gauge,GaugeContainer,GaugeValueArc,GaugeReferenceArc, GaugeValueText,us
 import CircularProgress from '@mui/material/CircularProgress';
 
 //Function
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { useParams } from 'react-router';
 
 //MyFunction
@@ -18,25 +18,16 @@ import convertData from '../utils/convertData';
 
 
 const Home = () => {
-
   const {data, getDataByLatLong,getAllDataByKey,loading,chartData,getNextHoursInfo} = AccuWeather()
   const {rainChance} = convertData()
   const params = useParams()
   
   
+  
 
   useEffect(()=>{
    
-    if(params.key){
-      async function fetchData(){
-        await getAllDataByKey(params.key!)
-        await getNextHoursInfo(params.key!)   
-      }
-        fetchData()    
-        
-          
-      
-    }else{
+    if(!params.key){
       if('geolocation' in navigator){
         navigator.geolocation.getCurrentPosition((position)=>{
         let lat = position.coords.latitude
@@ -51,9 +42,19 @@ const Home = () => {
       }else{
         alert("Serviço de geolocalização indisponivel!")
       }
+       
+        
+          
+      
+    }else if(params.key){
+      async function fetchData(){
+        await getAllDataByKey(params.key!)
+        await getNextHoursInfo(params.key!)   
+      }
+        fetchData()   
     }
       
-  },[])
+  },[params])
 
   
 

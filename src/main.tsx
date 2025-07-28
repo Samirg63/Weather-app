@@ -25,9 +25,10 @@ createRoot(document.getElementById('root')!).render(
       <Navigation/>
       <div className='w-full h-full overflow-y-auto'>
         <Header/>
-        <Container> 
+        <Container>
+          <div></div> 
           <Routes>
-              <Route index path="/" element={<Home/>}/>
+              <Route path="/" element={<Home/>}/>
               <Route path="/pins" element={<Pins/>}/>
               <Route path={'/auth'} element={<Auth />}/>
               <Route path={'/:key'} element={<Home />}/>
