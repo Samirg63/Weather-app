@@ -9,15 +9,17 @@ export default function AccuWeather(){
     const [nexthoursData,setNexthoursData]= useState<any[]>([])
     const [chartData,setChartData] = useState<any>({})
     const [widgetsData,setWidgetsData] = useState<any[]>([])
-
+    const [searchData,setSearchData] = useState<any[]>([])
+    
     const [loading,setLoading] = useState<boolean>(false)
     const [nextdaysLoading,setNextdaysLoading] = useState<boolean>(false)
     const [nextHoursLoading,setNextHoursLoading] = useState<boolean>(false)
     const [widgetsLoading,setWidgetsLoading] = useState<boolean>(false)
+    const [searchLoading,setSearchLoading] = useState<boolean>(false)
 
 
     const url = "http://dataservice.accuweather.com"
-    const apiKey = '3uysBEKxwyJylsoXTUxiOB9Y9FwdqU0F'
+    const apiKey = '7tC9vLQ5WGPbaLw0V3BHJt2NXZpZ0wXA'
     
 
 
@@ -256,5 +258,27 @@ export default function AccuWeather(){
         })
     }
 
-    return {data,chartData,getWidgetsData,widgetsData,widgetsLoading,getDataByLatLong,getAllDataByKey,getNextDaysInfo,loading,nextdaysLoading,nextHoursLoading,nextdaysData,nexthoursData,getNextHoursInfo}
+    const searchByText = async(text:string)=>{
+        await fetch(url+`/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${text}&language=pt-br`,{
+            method:"GET",
+        })
+        .then(response=>response.json())
+        .then((result)=>{
+            setSearchData(result)
+        })
+        .catch((e)=>{
+            console.log(e)
+        })
+        .finally(()=>{
+            setSearchLoading(false)
+        })
+    }
+
+    return {
+        getWidgetsData,getDataByLatLong,getAllDataByKey,getNextDaysInfo,getNextHoursInfo,searchByText,
+        data,chartData,widgetsData,nextdaysData,nexthoursData,searchData,
+        loading,widgetsLoading,nextdaysLoading,nextHoursLoading,searchLoading,
+        setSearchLoading
+        
+    }
 }

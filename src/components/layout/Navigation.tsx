@@ -10,8 +10,6 @@ import AuthServices from "../../services/Auth";
 const Navigation = () => {
   const location = useLocation()
   const {logout} = AuthServices()
-  
-
 
 
   return (

@@ -84,10 +84,10 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
 
   function verifyPin() :boolean{
     if(userData){
-      console.log(cityKey)
+      
       let result:boolean = false;
       userData.user.pins.map((item:string)=>{
-        console.log(item)
+        
         if(item === cityKey){
           result = true;
         }
