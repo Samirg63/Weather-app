@@ -9,7 +9,7 @@ import { Gauge,GaugeContainer,GaugeValueArc,GaugeReferenceArc, GaugeValueText,us
 import CircularProgress from '@mui/material/CircularProgress';
 
 //Function
-import { useEffect,useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
 //MyFunction
@@ -18,46 +18,71 @@ import convertData from '../utils/convertData';
 
 
 const Home = () => {
-  const {data, getDataByLatLong,getAllDataByKey,loading,chartData,getNextHoursInfo} = AccuWeather()
+  const {data, getDataByLatLong,getAllDataByKey,loading,chartData,getNextHoursInfo, getDefaultCity} = AccuWeather()
   const {rainChance} = convertData()
   const params = useParams()
+  const userAuthData = JSON.parse(localStorage.getItem('auth')!);
+  
   
   
   
 
   useEffect(()=>{
    
-    if(!params.key){
-      if('geolocation' in navigator){
-        navigator.geolocation.getCurrentPosition((position)=>{
-        let lat = position.coords.latitude
-        let long = position.coords.longitude
-        async function fetchData(){
-          await getDataByLatLong(lat,long)
-          await getNextHoursInfo()   
-        }
-        fetchData()
-        
-        })
-      }else{
-        alert("Serviço de geolocalização indisponivel!")
-      }
-       
-        
-          
-      
-    }else if(params.key){
+    if(params.key){
       async function fetchData(){
         await getAllDataByKey(params.key!)
         await getNextHoursInfo(params.key!)   
       }
+        fetchData()    
+    }else if(userAuthData && userAuthData.user.home){
+      async function fetchData(){
+        await getAllDataByKey(userAuthData.user.home)
+        await getNextHoursInfo(userAuthData.user.home)   
+      }
         fetchData()   
+    }else{
+      try {
+        async function fetchData(){
+          let Key = await getDefaultCity()
+          await getAllDataByKey(Key)
+          await getNextHoursInfo(Key)
+        }
+        fetchData()
+      } catch (error) {
+        if('geolocation' in navigator){
+          navigator.geolocation.getCurrentPosition((position)=>{
+          let lat = position.coords.latitude
+          let long = position.coords.longitude
+          async function fetchData(){
+            await getDataByLatLong(lat,long)
+            await getNextHoursInfo()   
+          }
+          fetchData()
+          
+          })
+        }else{
+          alert("Serviço de geolocalização indisponivel!")
+          
+        }
+      }
+     
+       
     }
       
   },[params])
 
   
-
+  function getNextDaysKey(){
+    if(params.key){
+      return params.key
+    }else if(userAuthData.user.home){
+      return userAuthData.user.home
+    }
+     else{
+      return ''
+    }
+  }
 
 
 
@@ -96,7 +121,7 @@ const Home = () => {
         </div>
         :
 
-        <div className='w-9/12 grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4 h-full'>
+        <div className='w-9/12 max-md:w-full grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4 h-full'>
         
         {/* Main Display */}
         <MainDisplay IconPhrase={data.IconPhrase} IsDaylight={data.IsDaylight} LocalizedName={data.LocalizedName} Pressure={data.Pressure} RainProbability={data.RainProbability} Temperature={data.Temperature} Wind={data.Wind} chartData={chartData} cityKey={data.Key} />
@@ -108,7 +133,7 @@ const Home = () => {
               <p>Today wind speed</p>
               <h3 className='font-semibold text-xl'>{data.Wind.Speed.Value} {data.Wind.Speed.Unit}</h3>
             </div>
-            <img src="/assets/Compass.png" width={140} height={140} className='absolute right-0 top-0' alt="" />
+            <img src="/assets/Compass.png" width={140} height={140} className='max-md:hidden absolute right-0 top-0' alt="" />
           </div>
 
         {/*Rain chance Display  */}
@@ -118,6 +143,7 @@ const Home = () => {
               <p>Next hour rain chance</p>
               <h3 className='font-semibold text-xl'>{data.RainProbability}%</h3>
             </div>
+            <div className='max-md:hidden'>
             <Gauge 
             width={100} 
             height={100} 
@@ -127,6 +153,7 @@ const Home = () => {
             innerRadius={50} 
             cornerRadius={100} 
             className='font-bold'/>
+            </div>
           </div>
 
         {/*Pressure Display  */}
@@ -136,20 +163,22 @@ const Home = () => {
               <p>Today pressure</p>
               <h3 className='font-semibold text-xl'>{data.Pressure.Metric.Value} {data.Pressure.Metric.Unit}</h3>
             </div>
-            <GaugeContainer
-              width={100}
-              height={100}
-              startAngle={-110}
-              endAngle={110}
-              value={20}
-              outerRadius={45} innerRadius={50}
-              cornerRadius={100}
-            >
-              <GaugeReferenceArc />
-              <GaugeValueArc />
-              <GaugePointer/>
-            
-            </GaugeContainer>
+            <div className='max-md:hidden'>
+              <GaugeContainer
+                width={100}
+                height={100}
+                startAngle={-110}
+                endAngle={110}
+                value={20}
+                outerRadius={45} innerRadius={50}
+                cornerRadius={100}
+              >
+                <GaugeReferenceArc />
+                <GaugeValueArc />
+                <GaugePointer/>
+              
+              </GaugeContainer>
+            </div>
           </div>
 
         {/* UV Display */}
@@ -159,31 +188,35 @@ const Home = () => {
               <p>Today UV index</p>
               <h3 className='font-semibold text-xl'>{data.UVIndex}</h3>
             </div>
-          <GaugeContainer
-            width={100}
-            height={100}
-            startAngle={-110} 
-            endAngle={110} 
-            value={100}  
-            outerRadius={47} 
-            innerRadius={50} 
-            cornerRadius={100}  
-            className='font-bold'>
-            <GaugeReferenceArc />
-            <GaugeValueArc />
-            <linearGradient id="Uv-Gradient">
-              <stop offset="25%" stopColor="oklch(62.7% 0.194 149.214)" />
-              <stop offset="50%" stopColor="oklch(85.2% 0.199 91.936)" />
-              <stop offset="75%" stopColor="oklch(64.6% 0.222 41.116)" />
-              <stop offset="100%" stopColor="oklch(57.7% 0.245 27.325)" />
-            </linearGradient>
-            <GaugeValueText text={data.UVIndexText}/>
-          </GaugeContainer>
+            <div className='max-md:hidden'>            
+              <GaugeContainer
+              width={100}
+              height={100}
+              startAngle={-110} 
+              endAngle={110} 
+              value={100}  
+              outerRadius={47} 
+              innerRadius={50} 
+              cornerRadius={100}  
+              className='font-bold'>
+              <GaugeReferenceArc />
+              <GaugeValueArc />
+              <linearGradient id="Uv-Gradient">
+                <stop offset="25%" stopColor="oklch(62.7% 0.194 149.214)" />
+                <stop offset="50%" stopColor="oklch(85.2% 0.199 91.936)" />
+                <stop offset="75%" stopColor="oklch(64.6% 0.222 41.116)" />
+                <stop offset="100%" stopColor="oklch(57.7% 0.245 27.325)" />
+              </linearGradient>
+              <GaugeValueText text={data.UVIndexText}/>
+              </GaugeContainer>
+            </div>
           </div>
         
         </div>
       }
-      <NextDaysInfo cityKey={(params.key)? params.key : ''} />
+
+
+      <NextDaysInfo cityKey={getNextDaysKey()} />
     </Container>
   )
 }

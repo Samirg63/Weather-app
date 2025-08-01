@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
     <div className='flex h-full'>
 
       <Navigation/>
-      <div className='w-full h-full overflow-y-auto'>
+      <div className='w-full h-full overflow-y-hidden'>
         <Header/>
         <Container>
           <div></div> 
