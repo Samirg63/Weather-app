@@ -9,7 +9,7 @@ interface Props{
 
 const NextDaysInfo = ({cityKey=''}:Props) => {
 
-  const {nextdaysLoading,getNextDaysInfo,nextdaysData, nextHoursLoading,nexthoursData,getNextHoursInfo} = AccuWeather()
+  const {nextdaysLoading,getNextDaysInfo,nextdaysData, nextHoursLoading,nexthoursData,getNextHoursInfo,getDefaultCity} = AccuWeather()
   const {getIcon} = convertData()
   
 
@@ -19,8 +19,15 @@ const NextDaysInfo = ({cityKey=''}:Props) => {
         await getNextDaysInfo(cityKey)
         await getNextHoursInfo(cityKey)
       }else{
-        await getNextDaysInfo()
-        await getNextHoursInfo()
+        try {
+          let Key = await getDefaultCity()
+          await getNextDaysInfo(Key)
+          await getNextHoursInfo(Key)  
+        } catch (error) {
+          await getNextDaysInfo()
+          await getNextHoursInfo()  
+          
+        }
       }
     }
 
@@ -29,7 +36,7 @@ const NextDaysInfo = ({cityKey=''}:Props) => {
   
 
   return (
-    <div className='w-3/12 p-4 border-l border-zinc-300 h-screen '>
+    <div className='w-3/12 p-4 border-l border-zinc-300 h-screen max-md:hidden'>
         <h3 className='font-semibold text-center text-xl'>This Week</h3>
 {
   (nextHoursLoading ||  nexthoursData.length === 0)?

@@ -19,7 +19,7 @@ export default function AccuWeather(){
 
 
     const url = "http://dataservice.accuweather.com"
-    const apiKey = '7tC9vLQ5WGPbaLw0V3BHJt2NXZpZ0wXA'
+    const apiKey = '5Ac2QK9tQfWBG6iVROO7lPQZuAwS0ZwZ'
     
 
 
@@ -274,8 +274,32 @@ export default function AccuWeather(){
         })
     }
 
+    const getDefaultCity = async()=>{
+        setLoading(true)
+        return await fetch('https://api.ipify.org?format=json',{
+            method:'GET',
+            
+        })
+        .then(response=>response.json())
+        .then(async (result)=>{
+            return await fetch(`${url}/locations/v1/cities/ipaddress?apikey=${apiKey}&q=${result.ip}`,{
+                method:'GET',
+            })
+            .then(response=>response.json())
+            .then((result)=>{
+                return result.Key;
+            })
+            .catch((e:any)=>{
+                throw e
+            })
+        })
+        .catch((e)=>{
+            throw e;
+        })
+    }
+
     return {
-        getWidgetsData,getDataByLatLong,getAllDataByKey,getNextDaysInfo,getNextHoursInfo,searchByText,
+        getWidgetsData,getDataByLatLong,getAllDataByKey,getNextDaysInfo,getNextHoursInfo,searchByText, getDefaultCity,
         data,chartData,widgetsData,nextdaysData,nexthoursData,searchData,
         loading,widgetsLoading,nextdaysLoading,nextHoursLoading,searchLoading,
         setSearchLoading

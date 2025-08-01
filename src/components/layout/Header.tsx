@@ -3,6 +3,9 @@ import { FaRegBell } from "react-icons/fa";
 import { CiUser,CiLogin } from "react-icons/ci";
 import { Link, useLocation } from 'react-router'
 import React, { useEffect } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
+import Drawer from "@mui/material/Drawer";
+import Navigation from "./Navigation";
 
 import SearchBox from "../SearchBox";
 import Popper from "@mui/material/Popper";
@@ -18,47 +21,59 @@ const Header = () => {
   const {searchByText,searchData,searchLoading,setSearchLoading} = AccuWeather()
   const [isSearchOpen,setIsSearchOpen] = useState<boolean>(false)
   const [searchText,setSearchText] = useState<string>('')
+  const [username,setUsername] = useState<string>()
+  const [userPopper,setUserPopper] = useState<null | HTMLElement>(null)
+  const [showNav,setShowNav] = useState<boolean>(false);
 
+  useEffect(()=>{
+    let info:any = JSON.parse(localStorage.getItem('auth')!)
+    if(info){
+      setUsername(info.user.username)
+    }
+  },[])
+  
   if(location.pathname !== '/auth'){
 
-    const [username,setUsername] = useState<string>()
-    const [userPopper,setUserPopper] = useState<null | HTMLElement>(null)
-
-    useEffect(()=>{
-      let info:any = JSON.parse(localStorage.getItem('auth')!)
-      if(info){
-        setUsername(info.user.username)
-      }
-    },[])
     
     
-    function handleShowPopper(e:React.MouseEvent<HTMLElement>){
-      setUserPopper(userPopper ? null : e.currentTarget)
-    }
+  function handleShowPopper(e:React.MouseEvent<HTMLElement>){
+    setUserPopper(userPopper ? null : e.currentTarget)
+  }
 
-    function hidePopper(){
-      setUserPopper(null)
-    }
+  function hidePopper(){
+    setUserPopper(null)
+  }
 
-    let timeout:NodeJS.Timeout;
-    function search(e:React.ChangeEvent<HTMLInputElement>){
-      setSearchLoading(true)
-      let searchString:string = e.target.value
-      setSearchText(searchString)
-      clearTimeout(timeout)
-      timeout = setTimeout(() => {
-        searchByText(encodeURI(searchString))
-      }, 1500);
+  let timeout:NodeJS.Timeout;
+  function search(e:React.ChangeEvent<HTMLInputElement>){
+    setSearchLoading(true)
+    let searchString:string = e.target.value
+    setSearchText(searchString)
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      searchByText(encodeURI(searchString))
+    }, 2000);
 
-    }
+  }
   
-   function setSearchValue(city:string){
-    setSearchText(city)
-    setIsSearchOpen(false)
-   }
+  function setSearchValue(city:string){
+  setSearchText(city)
+  setIsSearchOpen(false)
+  }
+
+  function toggleNavigation(){
+    setShowNav(!showNav)
+  }
+
 
   return (
     <header className="p-6 flex justify-between w-full border-b-1 border-zinc-300">
+      <button className="text-2xl mr-4 cursor-pointer max-lg:block hidden" onClick={toggleNavigation}><GiHamburgerMenu/></button>
+      <Drawer open={showNav} onClose={toggleNavigation}>
+        <Navigation isOpen={showNav} setOpen={toggleNavigation}/>
+      </Drawer>
+    
+
       <ClickAwayListener  onClickAway={()=>{setIsSearchOpen(false)}}>   
         <div className="relative w-[700px] flex">
           <form className="flex gap-2 items-center w-full">
@@ -109,7 +124,7 @@ const Header = () => {
       </Popper>
     </header>
   )
-}
+  }
 }
 
 

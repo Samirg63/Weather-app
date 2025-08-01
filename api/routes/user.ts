@@ -13,4 +13,14 @@ userRouter.put('/pins',async (req,res)=>{
     res.status(result.status).send(result)
 })
 
+userRouter.put('/home',async (req,res)=>{
+    const data:{
+        _id:string,
+        home:string
+    } = req.body
+
+    let result = await user.updateHome(data.home,data._id)
+    res.status(result.status).send(result)
+})
+
 export default userRouter

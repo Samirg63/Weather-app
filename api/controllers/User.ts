@@ -44,4 +44,20 @@ export class UserController{
 
         return request
     }
+
+    async updateHome(homeKey:string,userId:string){
+        let request = await userModel.findOneAndUpdate({_id:new ObjectId(userId)},{home:homeKey})
+        .then((response)=>{
+            if(response!._id){
+                return ok(201,"home updated")
+            }else{
+                return httpError(400,"something is wrong")
+            }
+        })
+        .catch((e:any)=>{
+            return httpError(400,"something is wrong")
+        })
+
+        return request
+    }
 }

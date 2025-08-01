@@ -4,6 +4,7 @@ import UserServices from "../../services/User"
 import convertData from "../../utils/convertData"
 
 import { IoLocationSharp,IoHeartOutline,IoHeart,IoWaterOutline } from "react-icons/io5"
+import { TiHome,TiHomeOutline } from "react-icons/ti";
 import { LuWindArrowDown } from "react-icons/lu"
 import { FaWind } from "react-icons/fa"
 import { LineChart } from "@mui/x-charts"
@@ -25,10 +26,11 @@ type Props = {
 const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,RainProbability,Wind,cityKey,chartData}: Props) => {
   
   const [isPinned,setIsPinned] = useState<boolean>(false)
+  const [isHome,setIsHome] = useState<boolean>(false)
   const [userData,setUserData] = useState<any>(JSON.parse(localStorage.getItem('auth')!))
   const [actTime,setActTime] = useState<string>('00:00')
 
-  const {updatePin} = UserServices()
+  const {updatePin, updateHome} = UserServices()
   const {getImage} = convertData()
 
   useEffect(()=>{
@@ -40,6 +42,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
     }
 
     setIsPinned(verifyPin())
+    setIsHome(verifyHome())
   },[])
 
   function attTime(){
@@ -82,6 +85,33 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
     }
   }
 
+  async function pinHome(){
+    
+    if(userData){    
+      if(isHome){    
+        if(await updateHome('',userData.user._id)){
+          let newUserData = userData
+          newUserData.user.home = ''
+          setUserData(newUserData)
+          localStorage.setItem('auth',JSON.stringify(newUserData))
+          setIsHome(false)    
+        }
+      }else{
+        if(await updateHome(cityKey,userData.user._id)){
+          let newUserData = userData
+          newUserData.user.home = cityKey
+          setUserData(newUserData)
+          localStorage.setItem('auth',JSON.stringify(newUserData))   
+          setIsHome(true)  
+        }
+        
+      }
+    }else{
+      alert('You need to log in!')
+      
+    }
+  }
+
   function verifyPin() :boolean{
     if(userData){
       
@@ -98,6 +128,13 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
       return false;
     }
   }
+  function verifyHome() :boolean{
+    if(userData){
+      return (cityKey === userData.user.home)? true : false
+    }else{
+      return false;
+    }
+  }
   
   return (
     <div className={`rounded-xl relative bg-zinc-400  text-zin-900 col-span-2 row-span-2
@@ -107,7 +144,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
 
           <div className='flex justify-between p-4 absolute top-0 z-10 w-full h-full'>
               
-            <div className=' w-1/2 pr-4 flex flex-col justify-between'>
+            <div className=' w-1/2 max-md:w-full pr-4 flex flex-col justify-between'>
             
               <div className='flex justify-between items-center'>
                 <div className='flex gap-2 items-center text-lg relative'>
@@ -118,6 +155,14 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
                     <IoHeart 
                     className={`text-2xl absolute top-1 z-[0] duration-200
                     ${(isPinned)? 'fill-red-400' : "fill-[rgba(240,240,240,.5)]"}
+                      `}/>
+                  </div>
+
+                  <div className=' cursor-pointer ml-4' onClick={pinHome}>
+                    <TiHomeOutline className='text-2xl absolute top-1 z-[1]'/> 
+                    <TiHome 
+                    className={`text-2xl absolute top-1 z-[0] duration-200
+                    ${(isHome)? 'fill-[#44FCCB]' : "fill-[rgba(240,240,240,.5)]"}
                       `}/>
                   </div>
                 </div>
@@ -148,7 +193,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
               </div>
             </div>
 
-            <div  className='bg-[rgba(228,228,231,.75)] text-zinc-900 rounded-xl w-1/2 p-4 flex flex-col justify-between'>
+            <div  className='max-md:hidden bg-[rgba(228,228,231,.75)] text-zinc-900 rounded-xl w-1/2 p-4 flex flex-col justify-between'>
               
         
               <div className='font-semibold text-xl'>
