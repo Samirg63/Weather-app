@@ -15,7 +15,8 @@ import Home from './pages/Home'
 import Pins from './pages/Pins'
 import Auth from './pages/Auth'
 
-
+let headers = new Headers();
+headers.append('Access-Control-Allow-Origin', '*')
 
 
 createRoot(document.getElementById('root')!).render(

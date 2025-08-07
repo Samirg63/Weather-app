@@ -17,6 +17,8 @@ export default function AccuWeather(){
     const [widgetsLoading,setWidgetsLoading] = useState<boolean>(false)
     const [searchLoading,setSearchLoading] = useState<boolean>(false)
 
+    
+
 
     const url = "https://dataservice.accuweather.com"
     const apiKey = '5Ac2QK9tQfWBG6iVROO7lPQZuAwS0ZwZ'
@@ -27,13 +29,15 @@ export default function AccuWeather(){
     const getDefaultCity = async()=>{
         setLoading(true)
         return await fetch('https://api.ipify.org?format=json',{
-            method:'GET',
+            
+            method:'GET'
             
         })
         .then(response=>response.json())
         .then(async (result)=>{
             return await fetch(`${url}/locations/v1/cities/ipaddress?apikey=${apiKey}&q=${result.ip}`,{
                 method:'GET',
+                
             })
             .then(response=>response.json())
             .then((result)=>{
@@ -53,7 +57,8 @@ export default function AccuWeather(){
     const getDataByLatLong = async (lat:number,long:number)=>{
         setLoading(true)
         await fetch(url+`/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${lat},${long}&language=pt-BR`,{
-            method:"GET"
+            method:"GET",
+            
         })
         .then((response)=>response.json())
         .then(async (result)=>{
@@ -73,7 +78,8 @@ export default function AccuWeather(){
 
         setLoading(true)
         await fetch(url+`/locations/v1/${key}?apikey=${apiKey}&language=pt-BR`,{
-            method:"GET"
+            method:"GET",
+            
         })
         .then((response)=>response.json())
         .then(async (result)=>{
@@ -91,7 +97,8 @@ export default function AccuWeather(){
     //Return: pressure and Pressure Unit
     const getPressure = async(key:string,addInfo?:any)=>{
         await fetch(url+`/currentconditions/v1/${key}?apikey=${apiKey}&details=true&language=en-US`,{
-            method:"GET"
+            method:"GET",
+            
         })
         .then((response)=>response.json())
         .then(async (result)=>{ 
@@ -106,7 +113,8 @@ export default function AccuWeather(){
     //Return: IconPhrase, IsDayLight,LocalzedName,Pressure (value and unit), Wind (Value and unit), RainProbabiity(percentage),Temperature(value and unit), UVIndex
     const getDataByKey = async(key:string,addInfo?:any)=>{
         await fetch(url+`/forecasts/v1/hourly/1hour/${key}?apikey=${apiKey}&details=true&language=en-US&metric=true`,{
-            method:"GET"
+            method:"GET",
+            
         })
         .then((response)=>response.json())
         .then((result)=>{
@@ -129,7 +137,8 @@ export default function AccuWeather(){
 
         if(key){
             await fetch(url+`/forecasts/v1/daily/5day/${key}?apikey=${apiKey}&metric=true`,{
-                method:"GET"
+                method:"GET",
+                
             })
             .then((response)=>response.json())
             .then((result)=>{
@@ -148,7 +157,8 @@ export default function AccuWeather(){
                 let long = position.coords.longitude
 
                 await fetch(url+`/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${lat},${long}&language=pt-BR`,{
-                    method:"GET"
+                    method:"GET",
+                    
                 })
                 .then((response)=>response.json())
                 .then(async (result)=>{
@@ -171,7 +181,8 @@ export default function AccuWeather(){
 
         if(key){
             await fetch(url+`/forecasts/v1/hourly/12hour/${key}?apikey=${apiKey}&metric=true`,{
-                method:"GET"
+                method:"GET",
+                
             })
             .then((response)=>response.json())
             .then((result)=>{
@@ -201,7 +212,8 @@ export default function AccuWeather(){
                 let long = position.coords.longitude
 
                 await fetch(url+`/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${lat},${long}&language=pt-BR`,{
-                    method:"GET"
+                    method:"GET",
+                    
                 })
                 .then((response)=>response.json())
                 .then(async (result)=>{
@@ -225,7 +237,7 @@ export default function AccuWeather(){
         let requests:any[] = []
         keys.map((key:string)=>{
             requests.push(
-                fetch(url+`/locations/v1/${key}?apikey=${apiKey}`,{method:'GET'})
+                fetch(url+`/locations/v1/${key}?apikey=${apiKey}`,{method:'GET',})
             )
         })
 
@@ -264,7 +276,9 @@ export default function AccuWeather(){
         let requests:any[] = []
         keys.map((key:string)=>{
             requests.push(
-                fetch(url+`/forecasts/v1/hourly/1hour/${key}?apikey=${apiKey}&metric=true`,{method:'GET'})
+                fetch(url+`/forecasts/v1/hourly/1hour/${key}?apikey=${apiKey}&metric=true`,{
+                    method:'GET',
+                    })
             )
         })
 
@@ -301,6 +315,7 @@ export default function AccuWeather(){
     const searchByText = async(text:string)=>{
         await fetch(url+`/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${text}&language=pt-br`,{
             method:"GET",
+            
         })
         .then(response=>response.json())
         .then((result)=>{
