@@ -18,7 +18,7 @@ export default function AccuWeather(){
     const [searchLoading,setSearchLoading] = useState<boolean>(false)
 
 
-    const url = "http://dataservice.accuweather.com"
+    const url = "https://dataservice.accuweather.com"
     const apiKey = '5Ac2QK9tQfWBG6iVROO7lPQZuAwS0ZwZ'
     
 

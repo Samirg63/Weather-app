@@ -28,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <Container>
           <div></div> 
           <Routes>
-              <Route path="/" element={<Home/>}/>
+              <Route path="/" index element={<Home/>}/>
               <Route path="/pins" element={<Pins/>}/>
               <Route path={'/auth'} element={<Auth />}/>
               <Route path={'/:key'} element={<Home />}/>
