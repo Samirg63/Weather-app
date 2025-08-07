@@ -23,6 +23,33 @@ export default function AccuWeather(){
     
 
 
+    //Get city key by IP adress
+    const getDefaultCity = async()=>{
+        setLoading(true)
+        return await fetch('https://api.ipify.org?format=json',{
+            method:'GET',
+            
+        })
+        .then(response=>response.json())
+        .then(async (result)=>{
+            return await fetch(`${url}/locations/v1/cities/ipaddress?apikey=${apiKey}&q=${result.ip}`,{
+                method:'GET',
+            })
+            .then(response=>response.json())
+            .then((result)=>{
+                return result.Key;
+            })
+            .catch((e:any)=>{
+                throw e
+            })
+        })
+        .catch((e)=>{
+            throw e;
+        })
+    }
+
+    //Only get the city key and city name -> redirect to Get pressure
+    //Return: city name, Key        
     const getDataByLatLong = async (lat:number,long:number)=>{
         setLoading(true)
         await fetch(url+`/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${lat},${long}&language=pt-BR`,{
@@ -40,6 +67,8 @@ export default function AccuWeather(){
         })
     }
     
+    // Only get the city key and city name-> redurect to getpressure
+    //Return: city name, Key    
     const getAllDataByKey = async (key:string)=>{
 
         setLoading(true)
@@ -58,7 +87,8 @@ export default function AccuWeather(){
         })
     }
     
-
+    //Only get the city pressure -> need the city key -> redirect to getData by key
+    //Return: pressure and Pressure Unit
     const getPressure = async(key:string,addInfo?:any)=>{
         await fetch(url+`/currentconditions/v1/${key}?apikey=${apiKey}&details=true&language=en-US`,{
             method:"GET"
@@ -72,6 +102,8 @@ export default function AccuWeather(){
         })
     }
 
+    //Get the forescast data (dont get pressure) -> need city key
+    //Return: IconPhrase, IsDayLight,LocalzedName,Pressure (value and unit), Wind (Value and unit), RainProbabiity(percentage),Temperature(value and unit), UVIndex
     const getDataByKey = async(key:string,addInfo?:any)=>{
         await fetch(url+`/forecasts/v1/hourly/1hour/${key}?apikey=${apiKey}&details=true&language=en-US&metric=true`,{
             method:"GET"
@@ -89,6 +121,8 @@ export default function AccuWeather(){
         })
     }
 
+    //Get the next five days forecast -> can use city key or Lat/Long
+    //Return: Datetime, IconPhrase,Temperature, Unit
     const getNextDaysInfo = async(key?:string)=>{
 
         setNextdaysLoading(true)
@@ -130,6 +164,8 @@ export default function AccuWeather(){
         })
     }}
 
+    //Get the next 12 hours forecast -> can use city key ot lat/Long
+    //Return: Temperature
     const getNextHoursInfo = async(key?:string)=>{
         setNextHoursLoading(true)
 
@@ -182,6 +218,8 @@ export default function AccuWeather(){
     }
     }
 
+    //Widgets need : key,cityName,IconPhrase,AdministrativeArea,Temperature, Unit,IsDaylight
+    //Get basic data (city name and administrative area) of many citys -> need city keys
     const getWidgetsData = async(keys:string[])=>{
         setWidgetsLoading(true)
         let requests:any[] = []
@@ -221,6 +259,7 @@ export default function AccuWeather(){
         
     }
 
+    //Get basic forecast data of many citys -> need city keys
     const getWidgetsForecastData = async(keys:string[],addInfo:any[])=>{
         let requests:any[] = []
         keys.map((key:string)=>{
@@ -258,6 +297,7 @@ export default function AccuWeather(){
         })
     }
 
+    //Autocomplete search
     const searchByText = async(text:string)=>{
         await fetch(url+`/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${text}&language=pt-br`,{
             method:"GET",
@@ -274,29 +314,8 @@ export default function AccuWeather(){
         })
     }
 
-    const getDefaultCity = async()=>{
-        setLoading(true)
-        return await fetch('https://api.ipify.org?format=json',{
-            method:'GET',
-            
-        })
-        .then(response=>response.json())
-        .then(async (result)=>{
-            return await fetch(`${url}/locations/v1/cities/ipaddress?apikey=${apiKey}&q=${result.ip}`,{
-                method:'GET',
-            })
-            .then(response=>response.json())
-            .then((result)=>{
-                return result.Key;
-            })
-            .catch((e:any)=>{
-                throw e
-            })
-        })
-        .catch((e)=>{
-            throw e;
-        })
-    }
+
+    
 
     return {
         getWidgetsData,getDataByLatLong,getAllDataByKey,getNextDaysInfo,getNextHoursInfo,searchByText, getDefaultCity,

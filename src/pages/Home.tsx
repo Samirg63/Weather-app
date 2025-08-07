@@ -124,7 +124,16 @@ const Home = () => {
         <div className='w-9/12 max-md:w-full grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4 h-full'>
         
         {/* Main Display */}
-        <MainDisplay IconPhrase={data.IconPhrase} IsDaylight={data.IsDaylight} LocalizedName={data.LocalizedName} Pressure={data.Pressure} RainProbability={data.RainProbability} Temperature={data.Temperature} Wind={data.Wind} chartData={chartData} cityKey={data.Key} />
+        <MainDisplay 
+        IconPhrase={data.IconPhrase} 
+        IsDaylight={data.IsDaylight} 
+        LocalizedName={data.LocalizedName} 
+        Pressure={data.Pressure} 
+        RainProbability={data.RainProbability} 
+        Temperature={data.Temperature} 
+        Wind={data.Wind} 
+        chartData={chartData} 
+        cityKey={data.Key} />
 
         {/*Wind Display  */}
           <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between relative'>
