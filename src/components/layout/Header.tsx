@@ -26,7 +26,7 @@ const Header = () => {
   const [showNav,setShowNav] = useState<boolean>(false);
 
   useEffect(()=>{
-    let info:any = JSON.parse(localStorage.getItem('auth')!)
+    let info:any = localStorage.getItem('auth')? JSON.parse(localStorage.getItem('auth')!) : null
     if(info){
       setUsername(info.user.username)
     }

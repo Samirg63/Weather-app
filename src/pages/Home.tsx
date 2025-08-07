@@ -21,7 +21,7 @@ const Home = () => {
   const {data, getDataByLatLong,getAllDataByKey,loading,chartData,getNextHoursInfo, getDefaultCity} = AccuWeather()
   const {rainChance} = convertData()
   const params = useParams()
-  const userAuthData = JSON.parse(localStorage.getItem('auth')!);
+  const userAuthData = localStorage.getItem('auth')? JSON.parse(localStorage.getItem('auth')!): null;
   
   
   
@@ -76,7 +76,7 @@ const Home = () => {
   function getNextDaysKey(){
     if(params.key){
       return params.key
-    }else if(userAuthData.user.home){
+    }else if(userAuthData?.user?.home){
       return userAuthData.user.home
     }
      else{
