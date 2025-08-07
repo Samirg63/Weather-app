@@ -37,7 +37,15 @@ const Pins = () => {
     </div>
     :
     (widgetsData).map((data:any,index:number)=>(
-      <Widget cityKey={userData.user.pins[index]} city={data.LocalizedName} iconPhrase={data.IconPhrase} state={data.AdministrativeArea.ID} temperature={data.Temperature} unit={data.Unit} IsDaylight={data.IsDaylight} key={index}/>
+      <Widget 
+      cityKey={userData.user.pins[index]} 
+      city={data.LocalizedName} 
+      iconPhrase={data.IconPhrase} 
+      state={data.AdministrativeArea.ID} 
+      temperature={data.Temperature} 
+      unit={data.Unit} 
+      IsDaylight={data.IsDaylight} 
+      key={index}/>
     ))
 
   }

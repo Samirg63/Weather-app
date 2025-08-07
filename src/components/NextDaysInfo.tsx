@@ -16,14 +16,17 @@ const NextDaysInfo = ({cityKey=''}:Props) => {
   useEffect(()=>{
     async function getData(){
       if(cityKey){
+        //city key comes from URL param
         await getNextDaysInfo(cityKey)
         await getNextHoursInfo(cityKey)
       }else{
         try {
+          //Try to get the key from IP addres
           let Key = await getDefaultCity()
           await getNextDaysInfo(Key)
           await getNextHoursInfo(Key)  
         } catch (error) {
+          //Try to get the key from Lat/Long
           await getNextDaysInfo()
           await getNextHoursInfo()  
           
