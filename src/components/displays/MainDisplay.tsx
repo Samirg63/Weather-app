@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState} from "react"
 
 import UserServices from "../../services/User"
 import convertData from "../../utils/convertData"
@@ -9,6 +9,9 @@ import { LuWindArrowDown } from "react-icons/lu"
 import { FaWind } from "react-icons/fa"
 import { LineChart } from "@mui/x-charts"
 import CircularProgress from "@mui/material/CircularProgress"
+import Popper from "@mui/material/Popper";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import LoginMessage from "../loginMessage";
 
 type Props = {
     IconPhrase:string,
@@ -29,6 +32,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
   const [isHome,setIsHome] = useState<boolean>(false)
   const [userData,setUserData] = useState<any>(JSON.parse(localStorage.getItem('auth')!))
   const [actTime,setActTime] = useState<string>('00:00')
+  const [popperAnchor,setPopperAnchor] = useState<null | HTMLElement>(null)
 
   const {updatePin, updateHome} = UserServices()
   const {getImage} = convertData()
@@ -56,7 +60,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
   setInterval(() => {attTime()}, 1000*20);
   
 
-  async function pinCity(){
+  async function pinCity(e:MouseEvent){
     if(userData){    
       if(isPinned){
         let pinnedCitys:string[] = userData.user.pins.filter((key:string) => key !== cityKey) 
@@ -81,11 +85,11 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
         
       }
     }else{
-      alert('You need to log in!')
+      handlePopper(e.target!)
     }
   }
 
-  async function pinHome(){
+  async function pinHome(e:any){
     
     if(userData){    
       if(isHome){    
@@ -107,7 +111,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
         
       }
     }else{
-      alert('You need to log in!')
+      handlePopper(e.target!)
       
     }
   }
@@ -128,6 +132,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
       return false;
     }
   }
+
   function verifyHome() :boolean{
     if(userData){
       return (cityKey === userData.user.home)? true : false
@@ -135,10 +140,19 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
       return false;
     }
   }
+
+  function handlePopper(element?:any){
+    
+    if(element){
+      setPopperAnchor(element)
+    }else{
+      setPopperAnchor(null)
+    }
+  }
   
   return (
     <div className={`rounded-xl relative bg-zinc-400  text-zin-900 col-span-2 row-span-2
-        ${(IconPhrase.includes('clear') ||IconPhrase.includes('hot') )&& !IsDaylight ? 'text-white' : 'text-zinc-900'}
+        ${(IconPhrase.toLocaleLowerCase().includes('clear') || IconPhrase.toLocaleLowerCase().includes('hot') ) && !IsDaylight ? 'text-white' : 'text-zinc-900'}
         `}>
           <img src={getImage(IconPhrase,IsDaylight)} alt="" className='absolute h-full w-full rounded-[inherit] brightness-[85%]' />
 
@@ -147,28 +161,35 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
             <div className=' w-1/2 max-md:w-full pr-4 flex flex-col justify-between'>
             
               <div className='flex justify-between items-center'>
-                <div className='flex gap-2 items-center text-lg relative'>
-                  <IoLocationSharp/>
-                  <h3 className='font-semibold'>{LocalizedName}</h3>
-                  <div className=' cursor-pointer' onClick={pinCity}>
-                    <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
-                    <IoHeart 
-                    className={`text-2xl absolute top-1 z-[0] duration-200
-                    ${(isPinned)? 'fill-red-400' : "fill-[rgba(240,240,240,.5)]"}
-                      `}/>
-                  </div>
+                <ClickAwayListener onClickAway={handlePopper}>   
+                  <div className='flex gap-2 items-center text-lg relative'>
+                    <IoLocationSharp/>
+                    <h3 className='font-semibold'>{LocalizedName}</h3>
+                      <div className=' cursor-pointer' aria-describedby="LogInPopper" onClick={(e:any)=>{pinCity(e)}}>
+                        <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
+                        <IoHeart 
+                        className={`text-2xl absolute top-1 z-[0] duration-200
+                        ${(isPinned)? 'fill-red-400' : "fill-[rgba(240,240,240,.5)]"}
+                          `}/>
+                      </div>
 
-                  <div className=' cursor-pointer ml-4' onClick={pinHome}>
-                    <TiHomeOutline className='text-2xl absolute top-1 z-[1]'/> 
-                    <TiHome 
-                    className={`text-2xl absolute top-1 z-[0] duration-200
-                    ${(isHome)? 'fill-[#44FCCB]' : "fill-[rgba(240,240,240,.5)]"}
-                      `}/>
+                    <div className=' cursor-pointer ml-4' onClick={(e:any)=>{pinHome(e)}}>
+                      <TiHomeOutline className='text-2xl absolute top-1 z-[1]'/> 
+                      <TiHome 
+                      className={`text-2xl absolute top-1 z-[0] duration-200
+                        ${(isHome)? 'fill-[#44FCCB]' : "fill-[rgba(240,240,240,.5)]"}
+                        `}/>
+                    </div>
                   </div>
-                </div>
+                </ClickAwayListener>
 
                 <span>Today {actTime}</span>
               </div>
+
+              <Popper id="LogInPopper" open={Boolean(popperAnchor)} anchorEl={popperAnchor} placement="bottom" className="bg-[rgb(235,235,235)] rounded-xl border-1 border-zinc-500 popper mt-4 absolute z-20">
+                <div id="arrow" data-popper-arrow ></div>
+                <LoginMessage/>
+              </Popper>
 
               <div className='text-center font-semibold'>
                 <h2 className='text-[80px]'>{Temperature.Value.toFixed(0)}º{Temperature.Unit}</h2>

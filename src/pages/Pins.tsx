@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import Widget from "../components/Widget"
 import AccuWeather from "../services/AccuWeather"
 import CircularProgress from "@mui/material/CircularProgress"
+import LoginMessage from "../components/loginMessage"
 
 const Pins = () => {
   const {getWidgetsData,widgetsData,widgetsLoading} = AccuWeather()
@@ -24,7 +25,7 @@ const Pins = () => {
 
   if(!userData){
     return (
-      <h1>You need to login</h1>
+      <LoginMessage/>
     )
   }
 

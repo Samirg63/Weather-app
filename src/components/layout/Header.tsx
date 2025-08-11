@@ -109,8 +109,9 @@ const Header = () => {
         </div>
         </ClickAwayListener>
       </div>
+
       <Popper id="userPopper" open={Boolean(userPopper)} anchorEl={userPopper} placement="left"
-        className="bg-[rgb(235,235,235)] rounded-xl border-1 border-zinc-500"
+        className="bg-[rgb(235,235,235)] rounded-xl border-1 border-zinc-500 popper"
       >
        <div id="arrow" data-popper-arrow ></div>
         <div className="py-2 px-4">

@@ -210,9 +210,7 @@ const Auth = () => {
             <div className="h-[1px] w-4/12 bg-zinc-300"></div>
           </div>
           <div className="flex justify-around">
-            <Button variant="outlined" className="p-2">---</Button>
-            <Button variant="outlined" className="p-2">---</Button>
-            <Button variant="outlined" className="p-2">---</Button>
+            <Button variant="outlined" className="p-2 w-4/12">---</Button>
           </div>
         </div>
         <div  className="w-1/2 bg-primary  h-full text-white flex items-center justify-center shrink-0">
