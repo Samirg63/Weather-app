@@ -2,7 +2,7 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaRegBell } from "react-icons/fa";
 import { CiUser } from "react-icons/ci";
 import { useLocation } from 'react-router'
-import React, { useEffect } from "react";
+import React from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Drawer from "@mui/material/Drawer";
 import Navigation from "./Navigation";
