@@ -11,7 +11,7 @@ import { LineChart } from "@mui/x-charts"
 import CircularProgress from "@mui/material/CircularProgress"
 import Popper from "@mui/material/Popper";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import LoginMessage from "../loginMessage";
+import LoginMessage from "../LoginMessage";
 
 type Props = {
     IconPhrase:string,
@@ -141,13 +141,8 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
     }
   }
 
-  function handlePopper(element?:any){
-    
-    if(element){
+  function handlePopper(element:any){
       setPopperAnchor(element)
-    }else{
-      setPopperAnchor(null)
-    }
   }
   
   return (
@@ -161,11 +156,11 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
             <div className=' w-1/2 max-md:w-full pr-4 flex flex-col justify-between'>
             
               <div className='flex justify-between items-center'>
-                <ClickAwayListener onClickAway={handlePopper}>   
+                <ClickAwayListener onClickAway={()=>(setPopperAnchor(null))}>   
                   <div className='flex gap-2 items-center text-lg relative'>
                     <IoLocationSharp/>
                     <h3 className='font-semibold'>{LocalizedName}</h3>
-                      <div className=' cursor-pointer' aria-describedby="LogInPopper" onClick={(e:any)=>{pinCity(e)}}>
+                      <div className='cursor-pointer' aria-describedby="LogInPopper" onClick={(e:any)=>{pinCity(e)}}>
                         <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
                         <IoHeart 
                         className={`text-2xl absolute top-1 z-[0] duration-200
@@ -187,7 +182,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
               </div>
 
               <Popper id="LogInPopper" open={Boolean(popperAnchor)} anchorEl={popperAnchor} placement="bottom" className="bg-[rgb(235,235,235)] rounded-xl border-1 border-zinc-500 popper mt-4 absolute z-20">
-                <div id="arrow" data-popper-arrow ></div>
+                <div className="arrow" data-popper-arrow ></div>
                 <LoginMessage/>
               </Popper>
 

@@ -1,7 +1,7 @@
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import { FaRegBell } from "react-icons/fa";
-import { CiUser,CiLogin } from "react-icons/ci";
-import { Link, useLocation } from 'react-router'
+import { CiUser } from "react-icons/ci";
+import { useLocation } from 'react-router'
 import React, { useEffect } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import Drawer from "@mui/material/Drawer";
@@ -12,6 +12,7 @@ import Popper from "@mui/material/Popper";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useState } from "react";
 import AccuWeather from "../../services/AccuWeather";
+import UserActionList from "../UserActionList";
 
 
 
@@ -21,16 +22,8 @@ const Header = () => {
   const {searchByText,searchData,searchLoading,setSearchLoading} = AccuWeather()
   const [isSearchOpen,setIsSearchOpen] = useState<boolean>(false)
   const [searchText,setSearchText] = useState<string>('')
-  const [username,setUsername] = useState<string>()
   const [userPopper,setUserPopper] = useState<null | HTMLElement>(null)
   const [showNav,setShowNav] = useState<boolean>(false);
-
-  useEffect(()=>{
-    let info:any = localStorage.getItem('auth')? JSON.parse(localStorage.getItem('auth')!) : null
-    if(info){
-      setUsername(info.user.username)
-    }
-  },[])
   
   if(location.pathname !== '/auth'){
 
@@ -113,15 +106,8 @@ const Header = () => {
       <Popper id="userPopper" open={Boolean(userPopper)} anchorEl={userPopper} placement="left"
         className="bg-[rgb(235,235,235)] rounded-xl border-1 border-zinc-500 popper"
       >
-       <div id="arrow" data-popper-arrow ></div>
-        <div className="py-2 px-4">
-          {
-            (username)?
-            <h3>Welcome {username}</h3>
-            :
-            <Link to={'/auth'} className="flex items-center gap-1"><CiLogin/> <span className="font-semibold">LogIn</span></Link>
-          }
-        </div>
+       <div className="arrow" data-popper-arrow ></div>
+        <UserActionList/>
       </Popper>
     </header>
   )

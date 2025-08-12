@@ -3,6 +3,7 @@ import './app.css'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter,Routes,Route } from 'react-router'
 import {StrictMode} from 'react'
+import {GoogleOAuthProvider} from '@react-oauth/google'
 
 //layout components
 import Header from './components/layout/Header'
@@ -22,6 +23,7 @@ headers.append('Access-Control-Allow-Origin', '*')
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <GoogleOAuthProvider clientId='787898889208-fl6jcmaoc9r1582mlpk5ergrno0g022g.apps.googleusercontent.com'>
     <BrowserRouter>
       <div className='flex h-full'>
 
@@ -40,5 +42,6 @@ createRoot(document.getElementById('root')!).render(
         </div>
       </div>
     </BrowserRouter>
+    </GoogleOAuthProvider>
   </StrictMode>
 )

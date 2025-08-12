@@ -60,4 +60,10 @@ export class UserController{
 
         return request
     }
+
+    async findUser(params:object){
+        
+        let user = await userModel.findOne(params);
+        return ok(200,user);
+    }
 }

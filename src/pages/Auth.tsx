@@ -4,10 +4,12 @@ import InputAdornment from "@mui/material/InputAdornment"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
+import { GoogleLogin } from "@react-oauth/google";
 
 //Function
 import { useState, type ChangeEvent } from "react"
 import AuthServices from "../services/Auth";
+
 
 //Icons
 import { MdOutlineEmail } from "react-icons/md";
@@ -16,11 +18,13 @@ import { FaEye,FaEyeSlash } from "react-icons/fa";
 
 //Interfaces
 import type { IuserData } from "../utils/interfaces";
+import { googleAuth } from "../services/OAuth";
 
 const Auth = () => {
   const [authMethod,setAuthMethod] = useState<"login"| "signin">('login')
   const [formData,setFormData] = useState<IuserData>({})
   const {authLoading,login,register} = AuthServices()
+  const {loginWithOAuth} = googleAuth();
 
 
   function fadeAuthMessage(to:'login'|'signin'){
@@ -210,7 +214,14 @@ const Auth = () => {
             <div className="h-[1px] w-4/12 bg-zinc-300"></div>
           </div>
           <div className="flex justify-around">
-            <Button variant="outlined" className="p-2 w-4/12">---</Button>
+          <GoogleLogin
+            onSuccess={credentialResponse => {
+              loginWithOAuth(credentialResponse);
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
           </div>
         </div>
         <div  className="w-1/2 bg-primary  h-full text-white flex items-center justify-center shrink-0">

@@ -50,8 +50,8 @@ input[type="search"]::-webkit-search-results-decoration {
   fill: url('#Uv-Gradient');
 }
 
-#arrow,
-#arrow::before {
+.arrow,
+.arrow::before {
   position: absolute !important;
   width: 8px;
   height: 8px;
@@ -60,35 +60,35 @@ input[type="search"]::-webkit-search-results-decoration {
   border-width: inherit;
 }
 
-#arrow {
+.arrow {
   visibility: hidden;
 }
 
-#arrow::before {
+.arrow::before {
   visibility: visible;
   content: '';
   transform: rotate(45deg);
 }
 
-.popper[data-popper-placement='top'] > #arrow {
+.popper[data-popper-placement='top'] > .arrow {
   bottom: -4px !important;
   border-left-width: 0 !important;
   border-top-width: 0 !important;
 }
 
-.popper[data-popper-placement='bottom'] > #arrow {
+.popper[data-popper-placement='bottom'] > .arrow {
   top: -4px !important;
   border-right-width: 0 !important;
   border-bottom-width: 0 !important;
 }
 
-.popper[data-popper-placement='left'] > #arrow {
+.popper[data-popper-placement='left'] > .arrow {
   right: -4px !important;
   border-left-width: 0 !important;
   border-bottom-width: 0 !important;
 }
 
-.popper[data-popper-placement='right'] > #arrow {
+.popper[data-popper-placement='right'] > .arrow {
   left: -4px !important;
   border-right-width: 0 !important;
   border-top-width: 0 !important;

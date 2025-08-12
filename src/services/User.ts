@@ -50,5 +50,25 @@ export default function UserServices(){
         return request
     }
 
-    return {updatePin, updateHome}
+    const findUser = async(params:object)=>{
+        let request = await fetch(`${url}/user/findUser`,{
+            method:'POST',
+            headers:{
+                "Content-Type":"application/JSON",
+                "Access-Control-Allow-Origin":"*"
+            },
+            body:JSON.stringify(params)
+        })
+        .then(response=>response.json())
+        .then((result)=>{
+            return result.body
+        })
+        .catch((e:any)=>{
+            throw e
+        })
+
+        return request;
+    }
+
+    return {updatePin, updateHome, findUser}
 }

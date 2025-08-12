@@ -1,15 +1,15 @@
-export function ok(statusCode:number,msg:string){
+export function ok(statusCode:number,body:any){
     return{
         status:statusCode,
         success:true,
-        msg:msg
+        body:body
     }
 }
 
-export function httpError(statusCode:number,msg:string){
+export function httpError(statusCode:number,body:string){
     return{
         status:statusCode,
         success:false,
-        msg:'erro: '+msg
+        body:body
     }
 }

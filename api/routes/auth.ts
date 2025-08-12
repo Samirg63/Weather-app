@@ -11,6 +11,11 @@ interface registerData{
     email?:string,
 }
 
+interface googleData{
+    username:string,
+    email:string
+}
+
 interface loginData{
     email?:string,
     password?:string | string
@@ -19,19 +24,24 @@ authRouter.post('/register',async (req,res)=>{
 
     const data:registerData = req.body
 
-    if(!data.username){
-        res.status(403).send('Username is required')
-    }else if(!data.password){
-        res.status(403).send('Password is required')
-    }else if(!data.email){
-        res.status(403).send('Email is required')
-    }else if(data.password !== data.confirmPassword){
-        res.status(403).send("Password don't match!")
-    }else{
-        delete data.confirmPassword   
-        const result = await auth.register(data)
-        
-        res.status(result.status).send(result) 
+    switch (true) {
+        case !data.username:
+            res.status(403).send('Username is required')
+            break;
+        case !data.password:
+            res.status(403).send('Password is required')
+            break
+        case !data.email:
+            res.status(403).send('Email is required')
+            break
+        case data.password !== data.confirmPassword:
+            res.status(403).send("Passwords don't match")
+            break
+        default:
+            delete data.confirmPassword   
+            const result = await auth.register(data)  
+            res.status(result.status).send(result)
+            break;
     }
 })
 
@@ -39,16 +49,32 @@ authRouter.post('/login',async (req,res)=>{
 
     const data:loginData = req.body
 
-    if(!data.password){
-        res.status(403).send('Password is required')
-    }else if(!data.email){
-        res.status(403).send('Email is required')
-    }else{
-         
-        const result = await auth.login(data)
-        
-        res.status(result!.status).send(result) 
+    switch (true) {
+        case !data.password:
+            res.status(403).send('Password is required')
+            break;
+
+        case !data.email:
+            res.status(403).send('Email is required')
+            break;
+    
+        default:
+            const result = await auth.login(data)
+            res.status(result!.status).send(result)
+            break;
     }
+})
+
+authRouter.post('/google/register',async (req,res)=>{
+    const data:googleData = req.body 
+    const result = await auth.googleRegister(data)     
+    res.status(result.status).send(result) 
+})
+
+authRouter.post('/google/login',async (req,res)=>{
+    const data:googleData = req.body 
+    const result = await auth.googleLogin(data)  
+    res.status(result!.status).send(result) 
 })
 
 export default authRouter

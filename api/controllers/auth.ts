@@ -9,13 +9,19 @@ interface userData{
     username?:string,
     email?:string,
     password?:string | number,
-    _doc?:any
+    _doc?:any,
+    type?:'email' | 'google',
+    home?:''
 } 
+
+interface googleUserData{
+    email:string,
+    username:string
+}
 
 interface dbResponse{
     status:number,
     success:boolean,
-    msg:any,
     body?:any,
     token?:string
 }
@@ -37,7 +43,7 @@ export class authController{
             //hash password
             const salt = await bcrypt.genSalt(12)
             const hashedPass = await bcrypt.hash(String(data.password),salt)
-            const userData:userData = {...data,password:hashedPass}
+            const userData:userData = {...data,password:hashedPass,type:'email',home:''}
             
             let User:any = await UserController.addUser(userData)
             let {password,...rest} = User._doc
@@ -74,6 +80,37 @@ export class authController{
                 return httpError(400,'wrong Credentials')
             }
             
+        } catch (error) {
+            return httpError(400,error)
+        }
+    }
+
+    async googleRegister(data:googleUserData):Promise<dbResponse>{
+        try {
+            const userData:userData = {...data,type:'google',home:''}
+            
+            let User:any = await UserController.addUser(userData)
+            let secret:string|undefined = process.env.SECRET
+            let token = jwt.sign({...User._doc},secret!)
+
+            return {...ok(200,"Correct credentials!"),
+                body:User._doc,
+                token:token
+            }
+        } catch (error) {
+            return httpError(400,error)
+        }
+    }
+
+    async googleLogin(data:googleUserData):Promise<dbResponse>{
+        let user:userData | null = await UserController.getUserBy('email',data.email!)
+        try {
+            let secret:string|undefined = process.env.SECRET
+            let token = jwt.sign({...user!._doc},secret!)
+            return {...ok(200,"Correct credentials!"),
+                body:user!._doc,
+                token:token
+            } 
         } catch (error) {
             return httpError(400,error)
         }
