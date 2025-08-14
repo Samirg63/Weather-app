@@ -1,5 +1,5 @@
 export default function UserServices(){
-    const url = 'http://localhost:2000'
+    const url = 'https://api-weather-murex.vercel.app'
 
     const updatePin = async (pins:string[],id:string)=>{
         

@@ -16,7 +16,7 @@ interface Data{
 export default function AuthServices(){
     
     const [authLoading,setAuthLoading] = useState<boolean>(false);
-    const url:string = "http://localhost:2000/auth";
+    const url:string = "https://api-weather-murex.vercel.app/auth";
     const navigate = useNavigate();
     const {findUser} = UserServices();
 
