@@ -39,7 +39,7 @@ const NextDaysInfo = ({cityKey=''}:Props) => {
   
 
   return (
-    <div className='w-3/12 p-4 border-l border-zinc-300 h-screen max-md:hidden'>
+    <div className='w-3/12 p-4 border-l border-zinc-300 h-screen max-[1025px]:hidden'>
         <h3 className='font-semibold text-center text-xl'>This Week</h3>
 {
   (nextHoursLoading ||  nexthoursData.length === 0)?

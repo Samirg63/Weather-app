@@ -150,7 +150,6 @@ const Auth = () => {
   }
 
   function handleSubmit(){
-    console.log(formData)
     if(authMethod === 'login'){
       login(formData)
     }else if(authMethod === 'signin'){
@@ -160,9 +159,11 @@ const Auth = () => {
 
   return (
     <div id="auth-bg" className="w-full h-screen flex items-center justify-center">
-      <div  className={`auth-boxShadow bg-trueWhite w-[800px] h-[500px] border border-zinc-300 rounded-4xl flex
+      <div  className={`auth-boxShadow bg-trueWhite max-w-[800px] w-11/12 h-[500px] border border-zinc-300 rounded-4xl flex
         overflow-x-hidden
         `}>
+
+          {/*Log in Container  */}
         <div id="content-container" className="h-full flex flex-col justify-center shrink-0 w-1/2 p-4">
 
         {
@@ -224,14 +225,15 @@ const Auth = () => {
           />
           </div>
         </div>
+          {/* Message container */}
         <div  className="w-1/2 bg-primary  h-full text-white flex items-center justify-center shrink-0">
 
-          <div className="relative w-100 h-[52px]">
-                    <div className="text-center absolute w-100 mx-auto" id="login-container">
+          <div className="relative max-w-100 w-11/12 h-[52px]">
+                    <div className="text-center absolute max-w-100 w-11/12 mx-auto" id="login-container">
                       <h2 className="font-semibold text-xl">Log In with email</h2>
                       <p>Don't have an account? <button onClick={changeAuthMethod} className="text-secondary underline cursor-pointer">Sign In!</button></p>
                     </div>
-                    <div className="text-center absolute w-100 mx-auto opacity-0" id="signin-container">
+                    <div className="text-center absolute max-w-100 w-11/12 mx-auto opacity-0" id="signin-container">
                       <h2 className="font-semibold text-xl">Sign In our website</h2>
                       <p>Already have an account? <button onClick={changeAuthMethod} className="text-secondary underline cursor-pointer">Log In!</button></p>
                     </div>
@@ -239,6 +241,7 @@ const Auth = () => {
           </div>
         
         </div>
+          {/* Register container */}
         <div className="h-full shrink-0 w-1/2 p-4 flex flex-col justify-center">
 
         {

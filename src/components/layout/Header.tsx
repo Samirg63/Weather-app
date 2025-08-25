@@ -61,14 +61,14 @@ const Header = () => {
 
   return (
     <header className="p-6 flex justify-between w-full border-b-1 border-zinc-300">
-      <button className="text-2xl mr-4 cursor-pointer max-lg:block hidden" onClick={toggleNavigation}><GiHamburgerMenu/></button>
+      <button className="text-2xl mr-4 cursor-pointer max-[1190px]:block hidden" onClick={toggleNavigation}><GiHamburgerMenu/></button>
       <Drawer open={showNav} onClose={toggleNavigation}>
         <Navigation isOpen={showNav} setOpen={toggleNavigation}/>
       </Drawer>
     
 
       <ClickAwayListener  onClickAway={()=>{setIsSearchOpen(false)}}>   
-        <div className="relative w-[700px] flex">
+        <div className="relative max-w-[700px] w-6/12 flex">
           <form className="flex gap-2 items-center w-full">
             <HiMagnifyingGlass/>
             <input value={searchText} type="search" className="outline-0  w-full" placeholder="Search something here" name="search" id="" 

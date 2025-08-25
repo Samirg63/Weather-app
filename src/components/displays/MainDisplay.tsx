@@ -153,34 +153,37 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
 
           <div className='flex justify-between p-4 absolute top-0 z-10 w-full h-full'>
               
-            <div className=' w-1/2 max-md:w-full pr-4 flex flex-col justify-between'>
+            <div className=' w-1/2 max-[1280px]:w-full pr-4 flex flex-col justify-between'>
             
               <div className='flex justify-between items-center'>
-                <ClickAwayListener onClickAway={()=>(setPopperAnchor(null))}>   
+                   
                   <div className='flex gap-2 items-center text-lg relative'>
                     <IoLocationSharp/>
                     <h3 className='font-semibold'>{LocalizedName}</h3>
-                      <div className='cursor-pointer' aria-describedby="LogInPopper" onClick={(e:any)=>{pinCity(e)}}>
-                        <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
-                        <IoHeart 
-                        className={`text-2xl absolute top-1 z-[0] duration-200
-                        ${(isPinned)? 'fill-red-400' : "fill-[rgba(240,240,240,.5)]"}
-                          `}/>
-                      </div>
+                  </div>
+                
 
-                    <div className=' cursor-pointer ml-4' onClick={(e:any)=>{pinHome(e)}}>
+                <span>Today {actTime}</span>
+              </div>
+
+                <ClickAwayListener onClickAway={()=>(setPopperAnchor(null))}>
+                <div className="relative -top-5 max-[1025px]:-top-[5%]">
+                  <div className='cursor-pointer' aria-describedby="LogInPopper" onClick={(e:any)=>{pinCity(e)}}>
+                      <IoHeartOutline className='text-2xl absolute top-1 z-[1]'/> 
+                      <IoHeart 
+                      className={`text-2xl absolute top-1 z-[0] duration-200
+                      ${(isPinned)? 'fill-red-400' : "fill-[rgba(240,240,240,.5)]"}
+                        `}/>
+                  </div>
+                  <div className=' cursor-pointer ml-6' onClick={(e:any)=>{pinHome(e)}}>
                       <TiHomeOutline className='text-2xl absolute top-1 z-[1]'/> 
                       <TiHome 
                       className={`text-2xl absolute top-1 z-[0] duration-200
                         ${(isHome)? 'fill-[#44FCCB]' : "fill-[rgba(240,240,240,.5)]"}
                         `}/>
-                    </div>
                   </div>
+                </div>
                 </ClickAwayListener>
-
-                <span>Today {actTime}</span>
-              </div>
-
               <Popper id="LogInPopper" open={Boolean(popperAnchor)} anchorEl={popperAnchor} placement="bottom" className="bg-[rgb(235,235,235)] rounded-xl border-1 border-zinc-500 popper mt-4 absolute z-20">
                 <div className="arrow" data-popper-arrow ></div>
                 <LoginMessage/>
@@ -209,7 +212,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
               </div>
             </div>
 
-            <div  className='max-md:hidden bg-[rgba(228,228,231,.75)] text-zinc-900 rounded-xl w-1/2 p-4 flex flex-col justify-between'>
+            <div  className='max-[1280px]:hidden bg-[rgba(228,228,231,.75)] text-zinc-900 rounded-xl w-1/2 p-4 flex flex-col justify-between'>
               
         
               <div className='font-semibold text-xl'>

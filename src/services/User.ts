@@ -1,9 +1,13 @@
 export default function UserServices(){
-    const url = 'https://api-weather-murex.vercel.app'
+    // Development URL
+    // const url:string = "http://localhost:2000/user";
+
+    //Production URL
+    const url:string = "https://api-weather-murex.vercel.app/user";
 
     const updatePin = async (pins:string[],id:string)=>{
         
-        let request = await fetch(url+'/user/pins',{
+        let request = await fetch(url+'/pins',{
             method:'PUT',
             headers:{
                 "Content-Type":"application/JSON",
@@ -27,7 +31,7 @@ export default function UserServices(){
     }
 
     const updateHome = async(key:string,id:string)=>{       
-        let request = await fetch(url+'/user/home',{
+        let request = await fetch(url+'/home',{
             method:'PUT',
             headers:{
                 "Content-Type":"application/JSON",
@@ -51,7 +55,7 @@ export default function UserServices(){
     }
 
     const findUser = async(params:object)=>{
-        let request = await fetch(`${url}/user/findUser`,{
+        let request = await fetch(`${url}/findUser`,{
             method:'POST',
             headers:{
                 "Content-Type":"application/JSON",

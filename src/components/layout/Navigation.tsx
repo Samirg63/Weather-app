@@ -19,7 +19,7 @@ const Navigation = ({isOpen = false,setOpen}:Props) => {
 
   return (
     <div className={` border-r-2 h-screen border-gray-300 bg-primary text-white flex flex-col justify-between py-6 
-      ${(!isOpen)&& 'max-lg:hidden'}
+      ${(!isOpen) && 'max-[1190px]:hidden'}
     `}>
       <div> 
         <div className="flex items-center px-8" >

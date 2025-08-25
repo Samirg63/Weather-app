@@ -121,7 +121,7 @@ const Home = () => {
         </div>
         :
 
-        <div className='w-9/12 max-md:w-full grid grid-cols-2 grid-rows-4 py-2 px-24 gap-4 h-full'>
+        <div className='w-9/12 mx-auto max-[870px]:w-11/12 grid grid-cols-2 grid-rows-4 py-2 min-[870px]:px-24  gap-4 h-full'>
         
         {/* Main Display */}
         <MainDisplay 
@@ -136,23 +136,23 @@ const Home = () => {
         cityKey={data.Key} />
 
         {/*Wind Display  */}
-          <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between relative'>
+          <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between relative max-[870px]:col-span-2'>
             <div className='flex flex-col justify-between h-full'>
               <h3 className='font-semibold text-xl'>Wind</h3>
               <p>Today wind speed</p>
               <h3 className='font-semibold text-xl'>{data.Wind.Speed.Value} {data.Wind.Speed.Unit}</h3>
             </div>
-            <img src="/assets/Compass.png" width={140} height={140} className='max-md:hidden absolute right-0 top-0' alt="" />
+            <img src="/assets/Compass.png" width={140} height={140} className='max-[1025px]:hidden absolute right-0 top-0' alt="" />
           </div>
 
         {/*Rain chance Display  */}
-          <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
+          <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between max-[870px]:col-span-2'>
           <div id='rain-chance' className='flex flex-col justify-between h-full'>
               <h3 className='font-semibold text-xl'>Rain Chance</h3>
               <p>Next hour rain chance</p>
               <h3 className='font-semibold text-xl'>{data.RainProbability}%</h3>
             </div>
-            <div className='max-md:hidden'>
+            <div className='max-[1025px]:hidden'>
             <Gauge 
             width={100} 
             height={100} 
@@ -166,13 +166,13 @@ const Home = () => {
           </div>
 
         {/*Pressure Display  */}
-          <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
+          <div className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between max-[870px]:col-span-2'>
           <div className='flex flex-col justify-between h-full'>
               <h3 className='font-semibold text-xl'>Pressure</h3>
               <p>Today pressure</p>
               <h3 className='font-semibold text-xl'>{data.Pressure.Metric.Value} {data.Pressure.Metric.Unit}</h3>
             </div>
-            <div className='max-md:hidden'>
+            <div className='max-[1025px]:hidden'>
               <GaugeContainer
                 width={100}
                 height={100}
@@ -191,13 +191,13 @@ const Home = () => {
           </div>
 
         {/* UV Display */}
-          <div id='uv-gauge' className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between'>
+          <div id='uv-gauge' className='rounded-xl bg-zinc-300 py-4 px-8 flex justify-between max-[870px]:col-span-2'>
             <div className='flex flex-col justify-between h-full'>
               <h3 className='font-semibold text-xl'>UV Index</h3>
               <p>Today UV index</p>
               <h3 className='font-semibold text-xl'>{data.UVIndex}</h3>
             </div>
-            <div className='max-md:hidden'>            
+            <div className='max-[1025px]:hidden'>            
               <GaugeContainer
               width={100}
               height={100}
