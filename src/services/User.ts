@@ -1,9 +1,9 @@
 export default function UserServices(){
     // Development URL
-    // const url:string = "http://localhost:2000/user";
+    const url:string = "http://localhost:2000/user";
 
     //Production URL
-    const url:string = "https://api-weather-murex.vercel.app/user";
+    // const url:string = "https://api-weather-murex.vercel.app/user";
 
     const updatePin = async (pins:string[],id:string)=>{
         

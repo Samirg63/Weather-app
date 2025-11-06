@@ -21,7 +21,7 @@ export default function AccuWeather(){
 
 
     const url = "https://dataservice.accuweather.com"
-    const apiKey = '5Ac2QK9tQfWBG6iVROO7lPQZuAwS0ZwZ'
+    const apiKey = 'zpka_5f7dbcece3b748cc8a561cbb862a4a84_57c4992c'
     
 
 
