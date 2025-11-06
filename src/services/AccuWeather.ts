@@ -1,7 +1,8 @@
 import { useState } from "react"
-import dotenv from 'dotenv'
 
-dotenv.config()
+
+
+    
 
 
 
@@ -20,11 +21,11 @@ export default function AccuWeather(){
     const [widgetsLoading,setWidgetsLoading] = useState<boolean>(false)
     const [searchLoading,setSearchLoading] = useState<boolean>(false)
 
-    
+    const url = "https://dataservice.accuweather.com";
+    const apiKey = 'zpka_5f7dbcece3b748cc8a561cbb862a4a84_57c4992c';
 
 
-    const url = "https://dataservice.accuweather.com"
-    const apiKey = process.env.API_KEY;
+
     
 
 
