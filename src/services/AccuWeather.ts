@@ -22,7 +22,7 @@ export default function AccuWeather(){
     const [searchLoading,setSearchLoading] = useState<boolean>(false)
 
     const url = "https://dataservice.accuweather.com";
-    const apiKey = 'zpka_5f7dbcece3b748cc8a561cbb862a4a84_57c4992c';
+    const apiKey = 'zpka_8b1ea37e435d4bd7a71e45269aca4538_0c9f225c';
 
 
 
