@@ -132,14 +132,14 @@ export default function convertData(){
 
             }else if(phrase.includes('storms')){
 
-            return '/assets/Icons/Storm.png'
+            return '/assets/Icons/Storm-icon.png'
 
             }else if(phrase.includes('snow')||
                 phrase.includes('ice')||
                 phrase.includes('sleet')||
                 phrase.includes('freezing')){
             
-            return '/assets/Icons/Snow.png'
+            return '/assets/Icons/Snow-icon.png'
 
             }else if(phrase.includes('windy')){
 
