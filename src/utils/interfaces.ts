@@ -3,6 +3,9 @@ export interface IuserData{
         email?:string,
         password?:string | number,
         confirmPassword?:string | number,
+        home?:string,
+        _id?:string,
+        pins?:string[]
         _doc?:any
     
 }

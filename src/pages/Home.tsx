@@ -9,65 +9,53 @@ import { Gauge,GaugeContainer,GaugeValueArc,GaugeReferenceArc, GaugeValueText,us
 import CircularProgress from '@mui/material/CircularProgress';
 
 //Function
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 
 //MyFunction
-import AccuWeather from '../services/AccuWeather';
+
 import convertData from '../utils/convertData';
+import UserServices from '../services/User';
+
+//Interfaces
+import type { IuserData } from '../utils/interfaces';
+import AuthServices from '../services/Auth';
+import useWeather from '../hooks/useWeather';
 
 
 const Home = () => {
-  const {data, getDataByLatLong,getAllDataByKey,loading,chartData,getNextHoursInfo, getDefaultCity} = AccuWeather()
+  
   const {rainChance} = convertData()
+  const {logout} = AuthServices()
   const params = useParams()
-  const userAuthData = localStorage.getItem('auth')? JSON.parse(localStorage.getItem('auth')!): null;
+  const {tokenToData} = UserServices()
+  const [userData,setUserData] = useState<IuserData|null>(null)
+  const {data,chartData,getWeatherData,loading} = useWeather()
   
   
   
   
 
   useEffect(()=>{
+
+    async function fetchWithToken(){
+      let user = await tokenToData(JSON.parse(localStorage.getItem('token')!).token)
+      let data = JSON.parse(localStorage.getItem('userData')!)
+      
+      setUserData(user)
+      getWeatherData(data.home)
+    }
    
     if(params.key){
-      async function fetchData(){
-        await getAllDataByKey(params.key!)
-        await getNextHoursInfo(params.key!)   
-      }
-        fetchData()    
-    }else if(userAuthData && userAuthData.user.home){
-      async function fetchData(){
-        await getAllDataByKey(userAuthData.user.home)
-        await getNextHoursInfo(userAuthData.user.home)   
-      }
-        fetchData()   
-    }else{
-      try {
-        async function fetchData(){
-          let Key = await getDefaultCity()
-          await getAllDataByKey(Key)
-          await getNextHoursInfo(Key)
-        }
-        fetchData()
+         getWeatherData(params.key)
+    }else if(localStorage.getItem('token')){
+      try {     
+        fetchWithToken()
       } catch (error) {
-        if('geolocation' in navigator){
-          navigator.geolocation.getCurrentPosition((position)=>{
-          let lat = position.coords.latitude
-          let long = position.coords.longitude
-          async function fetchData(){
-            await getDataByLatLong(lat,long)
-            await getNextHoursInfo()   
-          }
-          fetchData()
-          
-          })
-        }else{
-          alert("Serviço de geolocalização indisponivel!")
-          
-        }
+        logout();
       }
-     
-       
+    }else{
+      getWeatherData()
     }
       
   },[params])
@@ -76,17 +64,13 @@ const Home = () => {
   function getNextDaysKey(){
     if(params.key){
       return params.key
-    }else if(userAuthData?.user?.home){
-      return userAuthData.user.home
+    }else if(userData?.home){
+      return userData?.home
     }
      else{
       return ''
     }
   }
-
-
-
-
 
   function GaugePointer(){
     const { valueAngle, outerRadius, cx, cy } = useGaugeState();
@@ -113,11 +97,11 @@ const Home = () => {
   }
 
   return (
-    <Container customClass="flex ">
+    <Container customClass="flex">
       {
         (loading || Object.keys(data).length === 0)?
-        <div className='text-center w-9/12'>
-          <CircularProgress/>
+        <div className='w-9/12 relative'>
+          <CircularProgress className='absolute top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2'/>
         </div>
         :
 

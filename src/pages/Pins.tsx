@@ -3,23 +3,31 @@ import Widget from "../components/Widget"
 import AccuWeather from "../services/AccuWeather"
 import CircularProgress from "@mui/material/CircularProgress"
 import LoginMessage from "../components/LoginMessage"
+import UserServices from "../services/User"
+import type { IuserData } from "../utils/interfaces"
+import AuthServices from "../services/Auth"
 
 const Pins = () => {
   const {getWidgetsData,widgetsData,widgetsLoading} = AccuWeather()
-  const [userData,setUserData] = useState<any>(null)
+  const {logout} = AuthServices()
+  const [userData,setUserData] = useState<IuserData|null>(null)
+  const {tokenToData} = UserServices()
+
   useEffect(()=>{
 
-    if(localStorage.getItem('auth')){
-      let user = JSON.parse(localStorage.getItem('auth')!)
-
-      setUserData(user)
-      fetchData(user)
-         
+    async function fetchData(){
+      try {
+        let user = await tokenToData(JSON.parse(localStorage.getItem('token')!).token)
+        let data = JSON.parse(localStorage.getItem('userData')!)
+        setUserData({...user,...data})
+        await getWidgetsData(data.pins)     
+      } catch (error) {
+        //logout()
+      }
     }
-    async function fetchData(userInfo:any){
-      
-        await getWidgetsData(userInfo.user.pins)
-      
+
+    if(localStorage.getItem('token')){
+      fetchData()
     }
   },[])
 
@@ -32,8 +40,8 @@ const Pins = () => {
   function renderLoadings(){
     if(widgetsLoading){
       return(
-        <div className="mt-6 text-center">
-          <CircularProgress />
+        <div className="mt-6 text-center ">
+          <CircularProgress className='absolute top-1/3 left-7/12 -translate-y-1/2 -translate-x-full'/>
         </div>
       )
     }else if(widgetsData.length === 0){
@@ -52,7 +60,7 @@ const Pins = () => {
     (widgetsData).map((data:any,index:number)=>(
       
         <Widget 
-        cityKey={userData.user.pins[index]} 
+        cityKey={userData!.pins![index]} 
         city={data.LocalizedName} 
         iconPhrase={data.IconPhrase} 
         state={data.AdministrativeArea.ID} 

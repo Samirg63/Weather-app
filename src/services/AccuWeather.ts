@@ -1,11 +1,5 @@
 import { useState } from "react"
 
-
-
-    
-
-
-
 export default function AccuWeather(){
     
     const [data,setData] = useState<any>({})
@@ -22,7 +16,7 @@ export default function AccuWeather(){
     const [searchLoading,setSearchLoading] = useState<boolean>(false)
 
     const url = "https://dataservice.accuweather.com";
-    const apiKey = 'zpka_8b1ea37e435d4bd7a71e45269aca4538_0c9f225c';
+    const apiKey = import.meta.env.VITE_API_KEY;
 
 
 
@@ -38,6 +32,7 @@ export default function AccuWeather(){
             
         })
         .then(response=>response.json())
+
         .then(async (result)=>{
             return await fetch(`${url}/locations/v1/cities/ipaddress?apikey=${apiKey}&q=${result.ip}`,{
                 method:'GET',
@@ -87,8 +82,7 @@ export default function AccuWeather(){
         })
         .then((response)=>response.json())
         .then(async (result)=>{
-            if(result.Key){
-                
+            if(result.Key){      
                 await getPressure(result.Key,{LocalizedName:result.LocalizedName,Key:result.Key})
             }
         })
@@ -122,6 +116,7 @@ export default function AccuWeather(){
         })
         .then((response)=>response.json())
         .then((result)=>{
+            localStorage.setItem('weatherData',JSON.stringify({...result[0],...addInfo,timestamp:Date.now()}))
             setData({...result[0],...addInfo})
                   
         })
@@ -203,6 +198,7 @@ export default function AccuWeather(){
                       }
                     }
                 setChartData(arrData)
+                localStorage.setItem('weatherChart',JSON.stringify({...arrData,timestamp:Date.now()}))
             })
             .catch((e)=>{
                 console.log(e)
@@ -337,10 +333,26 @@ export default function AccuWeather(){
     
 
     return {
-        getWidgetsData,getDataByLatLong,getAllDataByKey,getNextDaysInfo,getNextHoursInfo,searchByText, getDefaultCity,
-        data,chartData,widgetsData,nextdaysData,nexthoursData,searchData,
-        loading,widgetsLoading,nextdaysLoading,nextHoursLoading,searchLoading,
-        setSearchLoading
-        
+        getWidgetsData,
+        getDataByLatLong,
+        getAllDataByKey,
+        getNextDaysInfo,
+        getNextHoursInfo,
+        getDefaultCity,
+        searchByText,
+        data,
+        setData,
+        chartData,
+        setChartData,
+        widgetsData,
+        nextdaysData,
+        nexthoursData,
+        searchData,
+        loading,
+        widgetsLoading,
+        nextdaysLoading,
+        nextHoursLoading,
+        searchLoading,
+        setSearchLoading    
     }
 }

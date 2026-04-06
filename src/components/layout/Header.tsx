@@ -38,6 +38,7 @@ const Header = () => {
   }
 
   let timeout:NodeJS.Timeout;
+  
   function search(e:React.ChangeEvent<HTMLInputElement>){
     setSearchLoading(true)
     let searchString:string = e.target.value
@@ -95,7 +96,6 @@ const Header = () => {
       </ClickAwayListener>
 
       <div className="flex gap-4">
-        <button className=" cursor-pointer"><FaRegBell className="text-xl"/></button>
         <ClickAwayListener onClickAway={hidePopper}>
           <div id="user" onClick={handleShowPopper} aria-describedby="userPopper" className="cursor-pointer w-10 h-10 rounded-full bg-zinc-200 flex justify-center items-center">
           <CiUser className="text-xl"/>

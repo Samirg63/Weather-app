@@ -14,11 +14,10 @@ interface Data{
 }
 
 export default function AuthServices(){
-    // Development URL
-    // const url:string = "http://localhost:2000/auth";
+    
+     const url:string = import.meta.env.VITE_API_URL;
 
-    //Production URL
-    const url:string = "https://api-weather-murex.vercel.app/auth";
+    
     
     const [authLoading,setAuthLoading] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -26,7 +25,7 @@ export default function AuthServices(){
 
     const register = (formData:Data)=>{
         setAuthLoading(true)
-        fetch(url+'/register',{
+        fetch(url+'/auth/register',{
             method:"POST",
             body:JSON.stringify(formData),
             headers:{
@@ -38,9 +37,18 @@ export default function AuthServices(){
         .then((result:IdbResponse)=>{
             if(result.token && result.success){
                 localStorage.setItem(
-                    'auth',
-                    JSON.stringify({token:result.token,user:result.body})
+                    'token',
+                    JSON.stringify({token:result.token})
                 )
+
+                localStorage.setItem('userData',
+                    JSON.stringify({
+                        pins:result.body.pins,
+                        home:result.body.home
+                    })
+                )
+
+                
             }
         })
         .catch((e:any)=>{
@@ -54,7 +62,7 @@ export default function AuthServices(){
 
     const login = async (formData:Data)=>{
         setAuthLoading(true)
-        fetch(url+'/login',{
+        fetch(url+'/auth/login',{
             method:"POST",
             body:JSON.stringify(formData),
             headers:{
@@ -64,12 +72,19 @@ export default function AuthServices(){
         })
         .then((response)=>response.json())
         .then(async (result:IdbResponse)=>{
+            console.log(result)
             if(result.token && result.success){
                 localStorage.setItem(
-                    'auth',
-                    JSON.stringify({token:result.token,user:result.body})
+                    'token',
+                    JSON.stringify({token:result.token})
                 )
                  
+                localStorage.setItem('userData',
+                    JSON.stringify({
+                        pins:result.body.pins,
+                        home:result.body.home
+                    })
+                )
             }
         })
         .catch((e:any)=>{
@@ -82,7 +97,7 @@ export default function AuthServices(){
     }
 
     const logout = ()=>{
-        localStorage.removeItem('auth')
+        localStorage.removeItem('token')
         location.reload()
     }
 
@@ -97,7 +112,7 @@ export default function AuthServices(){
 
     const googleRegister = async(email:string,username:string)=>{
         setAuthLoading(true)
-        fetch(url+'/google/register',{
+        fetch(url+'/auth/google/register',{
             method:"POST",
             body:JSON.stringify({email:email,username:username}),
             headers:{
@@ -109,8 +124,8 @@ export default function AuthServices(){
         .then((result:IdbResponse)=>{
             if(result.token && result.success){
                 localStorage.setItem(
-                    'auth',
-                    JSON.stringify({token:result.token,user:result.body})
+                    'token',
+                    JSON.stringify({token:result.token})
                 )
             }
         })
@@ -125,20 +140,19 @@ export default function AuthServices(){
 
     const googleLogin = async(email:string,username:string)=>{
         setAuthLoading(true)
-        fetch(url+'/google/login',{
+        fetch(url+'/auth/google/login',{
             method:"POST",
             body:JSON.stringify({email:email,username:username}),
             headers:{
                 "Content-Type":"application/JSON",
-                "Access-Control-Allow-Origin":"*"
             }
         })
         .then((response)=>response.json())
         .then(async (result:IdbResponse)=>{
             if(result.token && result.success){
                 localStorage.setItem(
-                    'auth',
-                    JSON.stringify({token:result.token,user:result.body})
+                    'token',
+                    JSON.stringify({token:result.token})
                 )
                  
             }

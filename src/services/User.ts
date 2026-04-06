@@ -1,17 +1,16 @@
-export default function UserServices(){
-    // Development URL
-    const url:string = "http://localhost:2000/user";
 
-    //Production URL
-    // const url:string = "https://api-weather-murex.vercel.app/user";
+export default function UserServices(){
+    const url:string = import.meta.env.VITE_API_URL;
+
+    
 
     const updatePin = async (pins:string[],id:string)=>{
         
-        let request = await fetch(url+'/pins',{
+        let request = await fetch(url+'/user/pins',{
             method:'PUT',
             headers:{
                 "Content-Type":"application/JSON",
-                "Access-Control-Allow-Origin":"*"
+                
             },
             body:JSON.stringify({
                 pins:pins,
@@ -31,11 +30,11 @@ export default function UserServices(){
     }
 
     const updateHome = async(key:string,id:string)=>{       
-        let request = await fetch(url+'/home',{
+        let request = await fetch(url+'/user/home',{
             method:'PUT',
             headers:{
                 "Content-Type":"application/JSON",
-                "Access-Control-Allow-Origin":"*"
+                
             },
             body:JSON.stringify({
                 home:key,
@@ -55,11 +54,11 @@ export default function UserServices(){
     }
 
     const findUser = async(params:object)=>{
-        let request = await fetch(`${url}/findUser`,{
+        let request = await fetch(`${url}/user/findUser`,{
             method:'POST',
             headers:{
                 "Content-Type":"application/JSON",
-                "Access-Control-Allow-Origin":"*"
+                
             },
             body:JSON.stringify(params)
         })
@@ -74,5 +73,20 @@ export default function UserServices(){
         return request;
     }
 
-    return {updatePin, updateHome, findUser}
+    const tokenToData = async(token:string)=>{
+        let request = await fetch(`${url}/user/token?token=${token}`,{
+            method:'GET',   
+        })
+        .then(response=>response.json())
+        .then((result)=>{
+            return result.body
+        })
+        .catch((e:unknown)=>{
+            throw e;
+        })
+
+        return request;
+    }
+
+    return {updatePin, updateHome, findUser,tokenToData}
 }

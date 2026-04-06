@@ -12,6 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress"
 import Popper from "@mui/material/Popper";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import LoginMessage from "../LoginMessage";
+import type { IuserData } from "../../utils/interfaces";
 
 type Props = {
     IconPhrase:string,
@@ -30,14 +31,57 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
   
   const [isPinned,setIsPinned] = useState<boolean>(false)
   const [isHome,setIsHome] = useState<boolean>(false)
-  const [userData,setUserData] = useState<any>(JSON.parse(localStorage.getItem('auth')!))
+  const [userData,setUserData] = useState<IuserData|null>(null)
   const [actTime,setActTime] = useState<string>('00:00')
   const [popperAnchor,setPopperAnchor] = useState<null | HTMLElement>(null)
 
-  const {updatePin, updateHome} = UserServices()
+  const {updatePin, updateHome,tokenToData} = UserServices()
   const {getImage} = convertData()
 
+
   useEffect(()=>{
+
+    function verifyPin(data:IuserData) :boolean{
+      if(data){
+        
+        let result:boolean = false;
+        data.pins!.map((item:string)=>{
+          
+          if(item === cityKey){
+            result = true;
+          }
+        })
+
+        return result
+      }else{
+        return false;
+      }
+    }
+
+    function verifyHome(data:IuserData) :boolean{
+         
+      if(data){
+        return (cityKey === data.home)? true : false
+      }else{
+        return false;
+      }
+    }
+
+
+    async function fetchUserData(){
+      let user = await tokenToData(JSON.parse(localStorage.getItem('token')!).token)
+      let data = JSON.parse(localStorage.getItem('userData')!)
+      setIsPinned(verifyPin(data))
+      setIsHome(verifyHome(data))
+      setUserData(user)
+
+
+    }
+
+    if(localStorage.getItem('token')){
+      fetchUserData()
+    }
+
     const date = new Date()
     if(date.getHours() >= 12){
       setActTime(String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0')+' PM')
@@ -45,8 +89,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
       setActTime(String(date.getHours()).padStart(2,'0')+':'+String(date.getMinutes()).padStart(2,'0')+' AM')
     }
 
-    setIsPinned(verifyPin())
-    setIsHome(verifyHome())
+    
   },[])
 
   function attTime(){
@@ -63,23 +106,23 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
   async function pinCity(e:MouseEvent){
     if(userData){    
       if(isPinned){
-        let pinnedCitys:string[] = userData.user.pins.filter((key:string) => key !== cityKey) 
-        if(await updatePin(pinnedCitys,userData.user._id)){
+        let pinnedCitys:string[] = userData.pins!.filter((key:string) => key !== cityKey) 
+        if(await updatePin(pinnedCitys,userData._id!)){
           let newUserData = userData
-          newUserData.user.pins = pinnedCitys
+          newUserData.pins = pinnedCitys
           setUserData(newUserData)
-          localStorage.setItem('auth',JSON.stringify(newUserData))
+          localStorage.setItem('userData',JSON.stringify({home:newUserData.home,pins:newUserData.pins}))
           setIsPinned(false)    
         }
       }else{
-        let pinnedCitys:string[] = userData.user.pins
+        let pinnedCitys:string[] = userData.pins!
         pinnedCitys.push(cityKey)
   
-        if(await updatePin(pinnedCitys,userData.user._id)){
+        if(await updatePin(pinnedCitys,userData._id!)){
           let newUserData = userData
-          newUserData.user.pins = pinnedCitys
+          newUserData.pins = pinnedCitys
           setUserData(newUserData)
-          localStorage.setItem('auth',JSON.stringify(newUserData))   
+          localStorage.setItem('userData',JSON.stringify({home:newUserData.home,pins:newUserData.pins}))
           setIsPinned(true)  
         }
         
@@ -93,19 +136,19 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
     
     if(userData){    
       if(isHome){    
-        if(await updateHome('',userData.user._id)){
+        if(await updateHome('',userData._id!)){
           let newUserData = userData
-          newUserData.user.home = ''
+          newUserData.home = ''
           setUserData(newUserData)
-          localStorage.setItem('auth',JSON.stringify(newUserData))
+          localStorage.setItem('userData',JSON.stringify({home:newUserData.home,pins:newUserData.pins}))
           setIsHome(false)    
         }
       }else{
-        if(await updateHome(cityKey,userData.user._id)){
+        if(await updateHome(cityKey,userData._id!)){
           let newUserData = userData
-          newUserData.user.home = cityKey
+          newUserData.home = cityKey
           setUserData(newUserData)
-          localStorage.setItem('auth',JSON.stringify(newUserData))   
+          localStorage.setItem('userData',JSON.stringify({home:newUserData.home,pins:newUserData.pins}))
           setIsHome(true)  
         }
         
@@ -116,31 +159,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
     }
   }
 
-  function verifyPin() :boolean{
-    if(userData){
-      
-      let result:boolean = false;
-      userData.user.pins.map((item:string)=>{
-        
-        if(item === cityKey){
-          result = true;
-        }
-      })
-
-      return result
-    }else{
-      return false;
-    }
-  }
-
-  function verifyHome() :boolean{
-    if(userData){
-      return (cityKey === userData.user.home)? true : false
-    }else{
-      return false;
-    }
-  }
-
+  
   function handlePopper(element:any){
       setPopperAnchor(element)
   }
@@ -176,11 +195,12 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
                         `}/>
                   </div>
                   <div className=' cursor-pointer ml-6' onClick={(e:any)=>{pinHome(e)}}>
-                      <TiHomeOutline className='text-2xl absolute top-1 z-[1]'/> 
+                      <TiHomeOutline className='text-2xl absolute top-1 z-[1] '/> 
                       <TiHome 
                       className={`text-2xl absolute top-1 z-[0] duration-200
-                        ${(isHome)? 'fill-[#44FCCB]' : "fill-[rgba(240,240,240,.5)]"}
+                        ${(isHome)? 'fill-fuchsia-300 ' : "fill-[rgba(240,240,240,.5)]"}
                         `}/>
+                        
                   </div>
                 </div>
                 </ClickAwayListener>

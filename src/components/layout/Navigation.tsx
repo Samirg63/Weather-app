@@ -23,12 +23,12 @@ const Navigation = ({isOpen = false,setOpen}:Props) => {
     `}>
       <div> 
         <div className="flex items-center px-8" >
-          <img src="https://placehold.co/40" alt="" />
+          <img src="/assets/Logo.png" alt="" className="w-[40px] h-[40px]" />
           <h1 className="font-bold ml-2">Weather app</h1>
         </div>
 
         <nav className=" space-y-2 font-semibold pl-8 mt-24">
-          <Link onClick={()=>{(setOpen)? setOpen() : null}} className={`flex gap-2 items-center py-2 border-secondary ${(location.pathname === '/')?"border-r-2" :null }`} to={'/'}><LuLayoutDashboard/> Dashboard</Link>
+          <a onClick={()=>{(setOpen)? setOpen() : null}} className={`flex gap-2 items-center py-2 border-secondary ${(location.pathname === '/')?"border-r-2" :null }`} href={'/'}><LuLayoutDashboard/> Dashboard</a>
           <Link onClick={()=>{(setOpen)? setOpen() : null}} className={`flex gap-2 items-center py-2 border-secondary ${(location.pathname === '/pins')?"border-r-2" :null }`} to={'/pins'}><FaRegHeart/> Favorites</Link>
         </nav>
       </div>
