@@ -22,7 +22,10 @@ import { googleAuth } from "../services/OAuth";
 
 const Auth = () => {
   const [authMethod,setAuthMethod] = useState<"login"| "signin">('login')
-  const [formData,setFormData] = useState<IuserData>({})
+  const [formData,setFormData] = useState<IuserData>({
+    email:"user@demo.com",
+    password:"userDemo"
+  })
   const {authLoading,login,register} = AuthServices()
   const {loginWithOAuth} = googleAuth();
 
@@ -174,7 +177,7 @@ const Auth = () => {
           :
             <FormControl className="w-full gap-4">
                 <h2 className="text-center font-bold text-3xl text-primary">Log in</h2>
-                <TextField onChange={handleChange} variant="outlined" type="email"  label="E-mail" name="email" required
+                <TextField onChange={handleChange} variant="outlined" type="email"  label="E-mail" name="email" value={"user@demo.com"} required
                 slotProps={{
                   input: {
                     startAdornment: (
@@ -186,7 +189,7 @@ const Auth = () => {
                 }}  
                 />
 
-                <TextField onChange={handleChange} name="password" className="password-input" variant="outlined"   label="Password" type="password" required
+                <TextField onChange={handleChange} name="password" className="password-input" value={"userDemo"} variant="outlined"   label="Password" type="password" required
                 slotProps={{
                   input: {
                     startAdornment: (

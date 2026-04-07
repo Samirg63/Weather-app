@@ -73,7 +73,7 @@ const MainDisplay = ({IconPhrase,IsDaylight,LocalizedName,Temperature,Pressure,R
       let data = JSON.parse(localStorage.getItem('userData')!)
       setIsPinned(verifyPin(data))
       setIsHome(verifyHome(data))
-      setUserData(user)
+      setUserData({...user,...data})
 
 
     }
